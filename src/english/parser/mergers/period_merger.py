@@ -1,4 +1,4 @@
-# Copyright (c) 2025 Ming Yu (yuming@oppo.com)
+# Copyright (c) 2025 Ming Yu (yuming@oppo.com), Liangliang Han (hanliangliang@oppo.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import calendar
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from ....core.logger import get_logger
@@ -21,6 +20,7 @@ from ..time_utils import (
     parse_datetime_str,
     format_datetime_str,
     create_day_range,
+    get_parser_and_parse,
 )
 
 
@@ -85,6 +85,8 @@ class PeriodMerger:
                     if holiday_result and len(holiday_result) > 0:
                         # Extract date from holiday result
                         holiday_time_str = holiday_result[0][0]  # Start time
+                        from datetime import datetime
+
                         target_date = parse_datetime_str(holiday_time_str).replace(tzinfo=None)
 
             elif date_token.get("type") == "time_weekday":
@@ -95,6 +97,8 @@ class PeriodMerger:
                     if weekday_result and len(weekday_result) > 0:
                         # Extract date from weekday result
                         weekday_time_str = weekday_result[0][0]  # Start time
+                        from datetime import datetime
+
                         target_date = parse_datetime_str(weekday_time_str).replace(tzinfo=None)
 
             if not target_date:
@@ -217,6 +221,8 @@ class PeriodMerger:
                 return None
 
             # Calculate time range based on period
+            from datetime import datetime
+
             if period_word in ["end"]:
                 # End of year: November - December
                 start_time = datetime(year, 11, 1, 0, 0, 0)
@@ -276,6 +282,9 @@ class PeriodMerger:
             target_year = base_time.year
             if month_num < base_time.month:
                 target_year += 1
+
+            from datetime import datetime, timedelta
+            import calendar
 
             if week_period == "weekend":
                 # Find weekend (Saturday-Sunday) in the month

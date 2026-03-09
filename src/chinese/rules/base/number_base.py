@@ -1,4 +1,4 @@
-# Copyright (c) 2025 Ming Yu (yuming@oppo.com)
+# Copyright (c) 2025 Ming Yu (yuming@oppo.com), Liangliang Han (hanliangliang@oppo.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -34,7 +34,9 @@ class NumberBaseRule:
             cross("一", "1")
             | cross("二", "2")
             | cross("两", "2")
+            | cross("俩", "2")  # 口语化：俩 = 两个
             | cross("三", "3")
+            | cross("仨", "3")  # 口语化：仨 = 三个
             | cross("四", "4")
             | cross("五", "5")
             | cross("六", "6")

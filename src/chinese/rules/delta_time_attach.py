@@ -1,4 +1,4 @@
-# Copyright (c) 2025 Ming Yu
+# Copyright (c) 2025 Ming Yu (yuming@oppo.com), Liangliang Han (hanliangliang@oppo.com)
 
 from ..word_level_pynini import string_file, pynutil
 

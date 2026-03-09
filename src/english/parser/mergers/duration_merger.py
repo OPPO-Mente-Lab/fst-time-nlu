@@ -1,4 +1,4 @@
-# Copyright (c) 2025 Ming Yu (yuming@oppo.com)
+# Copyright (c) 2025 Ming Yu (yuming@oppo.com), Liangliang Han (hanliangliang@oppo.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -289,6 +289,8 @@ class DurationMerger:
             start_time_str = time_result[0][0]
 
             # 5. 计算结束时间
+            from datetime import datetime, timedelta
+
             start_time = parse_datetime_from_str(start_time_str)
 
             # 应用duration
@@ -416,6 +418,8 @@ class DurationMerger:
                 return None
 
             # 5. 计算结束时间
+            from datetime import datetime, timedelta
+
             start_time = parse_datetime_from_str(start_time_str)
 
             # 应用duration
@@ -544,6 +548,8 @@ class DurationMerger:
                 return None
 
             # 4. 计算结束时间
+            from datetime import datetime, timedelta
+
             start_time = parse_datetime_from_str(start_time_str)
 
             # 应用duration
@@ -662,6 +668,8 @@ class DurationMerger:
             base_time_str = time_result[0][0]
 
             # 4. 计算偏移后的时间
+            from datetime import datetime, timedelta
+
             base_datetime = parse_datetime_from_str(base_time_str)
 
             # 应用duration

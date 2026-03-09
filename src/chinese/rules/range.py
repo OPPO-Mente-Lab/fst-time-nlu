@@ -1,4 +1,4 @@
-# Copyright (c) 2025 Ming Yu (yuming@oppo.com)
+# Copyright (c) 2025 Ming Yu (yuming@oppo.com), Liangliang Han (hanliangliang@oppo.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ..word_level_pynini import string_file, union, pynutil
+from ..word_level_pynini import string_file, union, pynutil, cross
 
 from ...core.processor import Processor
 from ...core.utils import get_abs_path
@@ -64,6 +64,27 @@ class RangeRule(Processor):
             + time_units
             + insert('"')
             + unit_zh_tail
+        )
+
+        # 模糊数量词映射：十几、二十几等
+        fuzzy_number_map = string_file(get_abs_path("../data/range/fuzzy_number.tsv"))
+
+        # 模糊数量词+时间单位（无后缀）
+        # 支持：这十几天、那二十几天、最近十几天等
+        fuzzy_number_range = (
+            (delete("最") + delete("近") + delete("的").ques).ques  # 可选："最近"或"最近的"
+            + delete("这").ques
+            + delete("那").ques
+            + insert('value: "')
+            + fuzzy_number_map
+            + insert('"')
+            + delete("个").ques
+            + sep
+            + insert('unit: "')
+            + time_units
+            + insert('"')
+            + unit_zh_tail
+            + insert('range_type: "ago"')
         )
 
         # 数字+时间单位+范围限定词
@@ -352,6 +373,7 @@ class RangeRule(Processor):
 
         self.tagger = (
             self.add_tokens(ji_range)  # "几"字表达式优先级最高
+            | self.add_tokens(fuzzy_number_range)  # 模糊数量词（十几、二十几）
             | self.add_tokens(range_pattern)
             | self.add_tokens(range_fractional_pattern)
             | self.add_tokens(recent_years_fixed)

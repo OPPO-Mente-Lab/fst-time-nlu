@@ -1,0 +1,15 @@
+{"query": "midnight", "metadata": "2025-12-17T10:00:00Z", "datetime_result": [["2025-12-17T00:00:00Z"]]}
+{"query": "early morning", "metadata": "2025-12-17T10:00:00Z", "datetime_result": [["2025-12-17T05:00:00Z", "2025-12-17T08:00:00Z"]]}
+{"query": "morning", "metadata": "2025-12-17T10:00:00Z", "datetime_result": [["2025-12-17T05:00:00Z", "2025-12-17T12:00:00Z"]]}
+{"query": "noon", "metadata": "2025-12-17T10:00:00Z", "datetime_result": [["2025-12-17T12:00:00Z"]]}
+{"query": "afternoon", "metadata": "2025-12-17T10:00:00Z", "datetime_result": [["2025-12-17T12:00:00Z", "2025-12-17T18:00:00Z"]]}
+{"query": "evening", "metadata": "2025-12-17T10:00:00Z", "datetime_result": [["2025-12-17T18:00:00Z", "2025-12-17T22:00:00Z"]]}
+{"query": "night", "metadata": "2025-12-17T10:00:00Z", "datetime_result": [["2025-12-17T18:00:00Z", "2025-12-17T23:59:59Z"]]}
+{"query": "late morning", "metadata": "2025-12-17T10:00:00Z", "datetime_result": [["2025-12-17T10:00:00Z", "2025-12-17T12:00:00Z"]]}
+{"query": "early hours", "metadata": "2025-12-17T10:00:00Z", "datetime_result": [["2025-12-17T00:00:00Z", "2025-12-17T05:00:00Z"]]}
+{"query": "dawn", "metadata": "2025-12-17T10:00:00Z", "datetime_result": [["2025-12-17T05:00:00Z", "2025-12-17T07:00:00Z"]]}
+{"query": "sunrise", "metadata": "2025-12-17T10:00:00Z", "datetime_result": [["2025-12-17T05:00:00Z", "2025-12-17T07:00:00Z"]]}
+{"query": "early evening", "metadata": "2025-12-17T10:00:00Z", "datetime_result": [["2025-12-17T18:00:00Z", "2025-12-17T20:00:00Z"]]}
+{"query": "late evening", "metadata": "2025-12-17T10:00:00Z", "datetime_result": [["2025-12-17T22:00:00Z", "2025-12-17T23:59:59Z"]]}
+{"query": "daytime", "metadata": "2025-12-17T10:00:00Z", "datetime_result": [["2025-12-17T05:00:00Z", "2025-12-17T18:00:00Z"]]}
+{"query": "day", "metadata": "2025-12-17T10:00:00Z", "datetime_result": [["2025-12-17T05:00:00Z", "2025-12-17T18:00:00Z"]]}

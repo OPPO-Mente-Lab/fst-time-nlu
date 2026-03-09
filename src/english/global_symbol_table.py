@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# !/usr/bin/env python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 全局SymbolTable单例
@@ -242,6 +242,7 @@ class GlobalSymbolTable:
             "sec",
             "secs",  # second 缩写
             "__long_number__",  # 长数字占位符
+            "__unknown_char__",  # 未知字符占位符（用于标记不在SymbolTable中的字符）
         ]
         for s in special_formats:
             if self.sym.find(s) == -1:

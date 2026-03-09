@@ -1,4 +1,4 @@
-# Copyright (c) 2025 Ming Yu (yuming@oppo.com)
+# Copyright (c) 2025 Ming Yu (yuming@oppo.com), Liangliang Han (hanliangliang@oppo.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -81,6 +81,7 @@ class PeriodParser(BaseParser):
                 year_offset,
                 month_period,
                 fractional,
+                token.get("source", ""),
             )
 
         # 处理月份时间段
@@ -137,12 +138,13 @@ class PeriodParser(BaseParser):
             list: 时间范围列表
         """
         if period_word < 0:
-            # 过去时间段：从过去某个时间点到现在的范围
-            # 例如：最近(-7) -> 从7天前到现在
-            start_time = base_time + timedelta(days=period_word)  # period_word是负数
-            start_of_day, end_of_day = self._get_day_range(start_time)
-            base_start, base_end = self._get_day_range(base_time)
-            return self._format_time_result(start_of_day, base_end)
+            # 过去时间段：从过去某天的00:00:00到当前时刻
+            # 采用“含今天的N个自然日”口径：例如 period_word=-7 表示最近7天
+            # base_time=12/17 10:00 → start=12/11 00:00, end=12/17 10:00
+            # 等价于 base_time + (period_word + 1) 天后对齐到日初
+            start_time = base_time + timedelta(days=period_word + 1)
+            start_of_day, _ = self._get_day_range(start_time)
+            return self._format_time_result(start_of_day, base_time)
         else:
             # 未来时间段：从现在到未来某个时间点的范围
             # 例如：之后(7) -> 从现在到7天后
@@ -162,6 +164,7 @@ class PeriodParser(BaseParser):
         year_offset,
         month_period=None,
         fractional=None,
+        source="",
     ):
         """
         处理时间单位（年、月、日、小时、分钟、秒、周、年代、世纪）
@@ -175,6 +178,19 @@ class PeriodParser(BaseParser):
         Returns:
             list: 时间范围列表
         """
+        # “这一年/这一周/这一个月”类：在现网tag中常被识别为 time_period（这 + 1 + 年/周/月）
+        # 但需求语义是当前自然周期（本年/本周/本月）。
+        if source == "这" and direction == -1 and offset == 1 and unit in {"year", "month", "week"}:
+            if unit == "year":
+                start_of_year, end_of_year = self._get_year_range(base_time)
+                return self._format_time_result(start_of_year, end_of_year)
+            if unit == "month":
+                start_of_month, end_of_month = self._get_month_range(base_time)
+                return self._format_time_result(start_of_month, end_of_month)
+            if unit == "week":
+                start_of_week, end_of_week = self._get_week_range(base_time)
+                return self._format_time_result(start_of_week, end_of_week)
+
         if unit == "year":
             return self._handle_year_unit(base_time, offset, direction, fractional)
         elif unit == "month":

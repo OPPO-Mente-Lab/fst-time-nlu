@@ -1,4 +1,4 @@
-# Copyright (c) 2025 Ming Yu (yuming@oppo.com)
+# Copyright (c) 2025 Ming Yu (yuming@oppo.com), Liangliang Han (hanliangliang@oppo.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -58,6 +58,7 @@ class Normalizer(Processor):
         normalize_case=True,
         remove_puncts=False,
         use_word_level=True,
+        include_source=True,
     ):
         """
         Initialize English text normalizer
@@ -69,9 +70,11 @@ class Normalizer(Processor):
             normalize_case (bool): Whether to normalize case
             remove_puncts (bool): Whether to remove punctuation
             use_word_level (bool): Whether to use word-level FST processing (default True)
+            include_source (bool): Whether to include source field in tags (default True)
         """
         super().__init__(name="en_normalizer")
         self.logger = get_logger(__name__)
+        self.include_source = include_source
         self.normalize_contractions = normalize_contractions
         self.normalize_case = normalize_case
         self.remove_puncts = remove_puncts
@@ -180,10 +183,15 @@ class Normalizer(Processor):
 
     def _tag_single(self, text: str) -> List[Dict[str, Any]]:  # noqa: C901
         """对单段文本执行一次FST解码并解析为token字典列表（词级FST版本）"""
+        unknown_chars = []  # 保存未知字符列表
         # 词级处理：如果有word_tokenizer，使用词级FST
         if self.word_tokenizer:
             try:
+                # 在process_text之前重置tokenizer状态
+                self.word_tokenizer.reset_stats()
                 escaped_text = self.word_tokenizer.process_text(text)
+                # 获取未知字符列表
+                unknown_chars = self.word_tokenizer.get_unknown_chars()
 
                 # 检查符号表兼容性：词级FST必须有符号表，且tagger也必须有相同的符号表
                 input_sym = escaped_text.input_symbols()
@@ -234,12 +242,17 @@ class Normalizer(Processor):
                 # 没有路径
                 return []
 
+            input_string = None  # 输入字符串（用于对齐）
             # 词级FST：使用string(token_type=sym)提取输出（Pynini官方方法）
             if self.word_tokenizer and shortest.output_symbols():
                 try:
                     # 使用Pynini官方词级FST输出提取方法
                     sym = shortest.output_symbols()
                     tagged_text = shortest.string(token_type=sym)
+                    # 提取输入字符串（词级FST）
+                    input_sym = shortest.input_symbols()
+                    if input_sym:
+                        input_string = shortest.string(token_type=input_sym)
                 except Exception as e:
                     # 如果string(token_type=sym)失败，记录错误并返回空
                     import logging
@@ -251,6 +264,8 @@ class Normalizer(Processor):
                 # 字符级FST：使用string()方法
                 try:
                     tagged_text = shortest.string()
+                    # 字符级FST：输入就是原始文本
+                    input_string = text
                 except Exception as e:
                     import logging
 
@@ -261,7 +276,32 @@ class Normalizer(Processor):
             if not tagged_text:
                 return []
 
-            return self.parse_tags(tagged_text)
+            tags = self.parse_tags(tagged_text, input_text=text, input_string=input_string,
+                                  token_positions=None, is_word_level=bool(self.word_tokenizer),
+                                  include_source=self.include_source)
+            
+            # 处理unknown_char：将__unknown_char__替换为实际字符
+            # TokenRule输出格式为token{value:"__unknown_char__"}，需要处理
+            if unknown_chars and self.word_tokenizer:
+                unknown_char_index = 0
+                for tag in tags:
+                    # 检查token类型和char类型的unknown_char
+                    if tag.get("type") in ("token", "char") and tag.get("value") == "__unknown_char__":
+                        if unknown_char_index < len(unknown_chars):
+                            tag["value"] = unknown_chars[unknown_char_index]
+                            # 如果是token类型，改为char类型（更符合语义）
+                            if tag.get("type") == "token":
+                                tag["type"] = "char"
+                            unknown_char_index += 1
+                        else:
+                            # 如果未知字符列表已用完，保留占位符（这种情况不应该发生）
+                            import logging
+                            logger = logging.getLogger(f"fst_time-{self.name}")
+                            logger.warning(
+                                f"未知字符列表已用完，但仍有__unknown_char__需要替换, 文本: {text[:50]}"
+                            )
+            
+            return tags
         except Exception as e:
             import logging
 

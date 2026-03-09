@@ -1,4 +1,4 @@
-# Copyright (c) 2025 Ming Yu (yuming@oppo.com)
+# Copyright (c) 2025 Ming Yu (yuming@oppo.com), Liangliang Han (hanliangliang@oppo.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -157,10 +157,10 @@ class RelativeBaseRule:
 
         # 5. Day + time (yesterday at 3pm, tomorrow 9:00)
         # 5a. Special case: tonight + time (mark with is_tonight)
-        tonight_with_time = tonight_marker + delete_space + self.time
+        tonight_with_time = tonight_marker + delete_space + self.time | (self.time + delete_space + tonight_marker)
 
         # 5b. Regular day + time
-        day_with_time = specific_day_dates + delete_space + self.time
+        day_with_time = specific_day_dates + delete_space + self.time | (self.time + delete_space + specific_day_dates)
 
         # 5c. Day + period + time (tomorrow morning 8am, today afternoon 3pm)
         day_with_period_time = (

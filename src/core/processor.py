@@ -1,4 +1,4 @@
-# Copyright (c) 2025 Ming Yu (yuming@oppo.com)
+# Copyright (c) 2025 Ming Yu (yuming@oppo.com), Liangliang Han (hanliangliang@oppo.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -390,7 +390,9 @@ class Processor:
         return tokens
 
     @staticmethod
-    def parse_tags(tagged_text: str) -> List[Dict[str, Any]]:
+    def parse_tags(tagged_text: str, input_text: str = None, input_string: str = None,
+                   token_positions: List[tuple] = None, is_word_level: bool = False,
+                   include_source: bool = True) -> List[Dict[str, Any]]:
         """
         将标记文本解析为结构化标记列表。（向后兼容的静态方法）
 
@@ -400,6 +402,11 @@ class Processor:
 
         Args:
             tagged_text: 带标记的FST输出字符串
+            input_text: 原始输入文本（用于提取source字段）
+            input_string: FST输入字符串（词级FST的token序列或字符级FST的原始文本）
+            token_positions: token位置映射列表（仅词级FST使用）
+            is_word_level: 是否使用词级FST
+            include_source: 是否在tag中添加source字段（默认True）
 
         Returns:
             List[Dict[str, Any]]: 标记字典列表
@@ -430,5 +437,200 @@ class Processor:
                     value = value.strip()
 
                 token_data[key] = value
+            
+            # 为时间相关tag添加source字段
+            if token_type.startswith("time_") and input_text and include_source:
+                source_text = Processor._extract_source_text(
+                    token_type, content, input_text, input_string, 
+                    token_positions, is_word_level
+                )
+                if source_text:
+                    token_data["source"] = source_text
+            
             tokens.append(token_data)
         return tokens
+    
+    @staticmethod
+    def _extract_source_text(token_type: str, content: str, input_text: str,
+                             input_string: str, token_positions: List[tuple],
+                             is_word_level: bool) -> str:
+        """
+        提取tag对应的原始文本片段
+        
+        Args:
+            token_type: tag类型
+            content: tag内容
+            input_text: 原始输入文本
+            input_string: FST输入字符串（token序列，仅词级FST）
+            token_positions: token位置映射（仅词级FST）
+            is_word_level: 是否使用词级FST
+            
+        Returns:
+            str: 原始文本片段，如果无法提取则返回None
+        """
+        if not input_text:
+            return None
+        
+        # 对于相对时间，使用关键词匹配（中英文通用）
+        if token_type == "time_relative":
+            # 中文关键词和完整时间词映射
+            chinese_time_words = [
+                "昨日", "明天", "今天", "前天", "后天", "去年", "明年",
+                "上周", "下周", "上月", "下月", "昨天", "明日", "今日", "前日", "后日"
+            ]
+            # 英文关键词
+            english_keywords = ["yesterday", "tomorrow", "today", "last", "next", "ago", "before", "after"]
+            
+            # 先尝试匹配完整的中文时间词（按长度从长到短排序，优先匹配长词）
+            sorted_words = sorted(chinese_time_words, key=len, reverse=True)
+            for word in sorted_words:
+                idx = input_text.find(word)
+                if idx != -1:
+                    return word
+            
+            # 如果没有完整词，尝试单个关键词（按文本位置顺序匹配）
+            chinese_keywords = ["昨", "明", "今", "前", "后", "上", "下", "去", "来"]
+            # 找到所有关键词的位置，按位置排序
+            keyword_positions = []
+            for keyword in chinese_keywords:
+                idx = input_text.find(keyword)
+                if idx != -1:
+                    keyword_positions.append((idx, keyword))
+            
+            if keyword_positions:
+                # 按位置排序，取第一个（最靠前的）
+                keyword_positions.sort(key=lambda x: x[0])
+                idx, keyword = keyword_positions[0]
+                # 尝试提取完整的时间词
+                common_time_words = [
+                    "昨日", "明天", "今天", "前天", "后天", "去年", "明年",
+                    "上周", "下周", "上月", "下月", "昨天", "明日", "今日", "前日", "后日"
+                ]
+                for end in range(idx + 1, min(idx + 5, len(input_text))):
+                    candidate = input_text[idx:end]
+                    if candidate in common_time_words:
+                        return candidate
+                # 如果找不到完整词，返回2-3个字符
+                return input_text[idx:idx+2] if idx+2 <= len(input_text) else input_text[idx]
+            
+            # 再尝试英文关键词（按位置顺序匹配）
+            input_lower = input_text.lower()
+            keyword_positions = []
+            for keyword in english_keywords:
+                idx = input_lower.find(keyword)
+                if idx != -1:
+                    keyword_positions.append((idx, keyword))
+            
+            if keyword_positions:
+                # 按位置排序，取第一个
+                keyword_positions.sort(key=lambda x: x[0])
+                idx, keyword = keyword_positions[0]
+                # 提取完整的单词（可能包含所有格）
+                end = idx + len(keyword)
+                # 检查是否有所有格
+                if end < len(input_text) and input_text[end] == "'":
+                    end += 2  # 包含"'s"
+                return input_text[idx:end] if end <= len(input_text) else input_text[idx:]
+        
+        # 对于其他时间类型，使用更通用的方法
+        if is_word_level and token_positions:
+            # 词级FST：通过token_positions映射
+            # 如果tag包含特定字段，尝试匹配对应的token
+            if "offset_day" in content or "offset_month" in content or "offset_year" in content:
+                # 相对时间：已经在上面处理
+                pass
+            elif "week_day" in content:
+                # 星期：查找"周"、"星期"等关键词
+                week_keywords = ["周", "星期", "礼拜"]
+                for keyword in week_keywords:
+                    if keyword in input_text:
+                        idx = input_text.find(keyword)
+                        if idx != -1:
+                            # 尝试提取完整的星期表达
+                            for end in range(idx + 1, min(idx + 5, len(input_text))):
+                                candidate = input_text[idx:end]
+                                if any(day in candidate for day in ["一", "二", "三", "四", "五", "六", "日", "天"]):
+                                    return candidate
+                            return input_text[idx:idx+3] if idx+3 <= len(input_text) else input_text[idx]
+            elif "month" in content or "day" in content or "year" in content:
+                # 日期：尝试匹配数字+单位（中文格式）
+                import re
+                date_pattern = re.compile(r'\d+[年月日号]')
+                match = date_pattern.search(input_text)
+                if match:
+                    return match.group(0)
+                # 如果没有中文格式，尝试ISO 8601格式（YYYY-MM-DD）
+                iso_pattern = re.compile(r'\d{4}-\d{2}-\d{2}')
+                match = iso_pattern.search(input_text)
+                if match:
+                    return match.group(0)
+                # 尝试匹配年份（YYYY）
+                if "year" in content:
+                    year_pattern = re.compile(r'\d{4}')
+                    match = year_pattern.search(input_text)
+                    if match:
+                        return match.group(0)
+            elif "hour" in content or "minute" in content or "second" in content:
+                # 时间：尝试匹配ISO 8601时间格式（HH:MM:SS或HH:MM）
+                import re
+                # 先尝试完整的ISO 8601格式（包含T和Z）
+                iso_time_pattern = re.compile(r'T\d{2}:\d{2}(:\d{2})?Z?')
+                match = iso_time_pattern.search(input_text)
+                if match:
+                    return match.group(0)
+                # 再尝试简单的时间格式（HH:MM或HH:MM:SS）
+                time_pattern = re.compile(r'\d{2}:\d{2}(:\d{2})?')
+                match = time_pattern.search(input_text)
+                if match:
+                    return match.group(0)
+            
+            # 默认：返回第一个token的原始文本
+            if token_positions:
+                _, _, first_token = token_positions[0]
+                return first_token
+        else:
+            # 字符级FST：直接在原始文本中查找
+            # 对于其他时间类型，使用关键词匹配
+            if "week_day" in content:
+                week_keywords = ["周", "星期", "礼拜"]
+                for keyword in week_keywords:
+                    idx = input_text.find(keyword)
+                    if idx != -1:
+                        for end in range(idx + 1, min(idx + 5, len(input_text))):
+                            candidate = input_text[idx:end]
+                            if any(day in candidate for day in ["一", "二", "三", "四", "五", "六", "日", "天"]):
+                                return candidate
+                        return input_text[idx:idx+3] if idx+3 <= len(input_text) else input_text[idx]
+            elif "month" in content or "day" in content or "year" in content:
+                import re
+                # 先尝试中文格式
+                date_pattern = re.compile(r'\d+[年月日号]')
+                match = date_pattern.search(input_text)
+                if match:
+                    return match.group(0)
+                # 再尝试ISO 8601格式
+                iso_pattern = re.compile(r'\d{4}-\d{2}-\d{2}')
+                match = iso_pattern.search(input_text)
+                if match:
+                    return match.group(0)
+                # 尝试匹配年份
+                if "year" in content:
+                    year_pattern = re.compile(r'\d{4}')
+                    match = year_pattern.search(input_text)
+                    if match:
+                        return match.group(0)
+            elif "hour" in content or "minute" in content or "second" in content:
+                # 时间：尝试匹配ISO 8601时间格式
+                import re
+                # 先尝试完整的ISO 8601格式（包含T和Z）
+                iso_time_pattern = re.compile(r'T\d{2}:\d{2}(:\d{2})?Z?')
+                match = iso_time_pattern.search(input_text)
+                if match:
+                    return match.group(0)
+                # 再尝试简单的时间格式（HH:MM或HH:MM:SS）
+                time_pattern = re.compile(r'\d{2}:\d{2}(:\d{2})?')
+                match = time_pattern.search(input_text)
+                if match:
+                    return match.group(0)
+        
+        return None

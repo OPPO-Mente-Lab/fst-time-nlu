@@ -1,4 +1,4 @@
-# Copyright (c) 2025 Ming Yu (yuming@oppo.com)
+# Copyright (c) 2025 Ming Yu (yuming@oppo.com), Liangliang Han (hanliangliang@oppo.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,12 +23,21 @@ from ..core.logger import get_logger
 class FstTimeExtractor:
     """Integrated time normalization and parsing extractor for English"""
 
-    def __init__(self, cache_dir=None, overwrite_cache=False):
+    def __init__(self, cache_dir=None, overwrite_cache=False, include_source=True):
+        """
+        Initialize time extractor
+        
+        Args:
+            cache_dir: FST cache directory
+            overwrite_cache: Whether to overwrite existing cache
+            include_source: Whether to include source field in tags (default True)
+        """
         self.logger = get_logger(__name__)
         # Initialize normalizer
         if not cache_dir:
             cache_dir = os.path.dirname(__file__) + "/test/fst"
-        self.normalizer = Normalizer(cache_dir=cache_dir, overwrite_cache=overwrite_cache)
+        self.normalizer = Normalizer(cache_dir=cache_dir, overwrite_cache=overwrite_cache,
+                                     include_source=include_source)
         # Initialize time parser
         self.time_parser = TimeParser()
         self.normalizer_time = 0

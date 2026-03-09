@@ -1,6 +1,11 @@
 # Recurring规则返回结果数量配置
 # 定义不同时间单位的重复次数
 
+# 是否启用周期性时间表达式解析
+# false: 所有周期性时间表达式统一返回空列表（当前默认）
+# true: 启用解析功能（待统一处理标准后启用）
+enable_recurring_parsing: false
+
 recurring_counts:
   day: 30        # 天为单位：返回30天
   week: 52       # 周为单位：返回52周（1年）

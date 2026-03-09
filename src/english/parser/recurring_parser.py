@@ -1,4 +1,4 @@
-# Copyright (c) 2025 Ming Yu (yuming@oppo.com)
+# Copyright (c) 2025 Ming Yu (yuming@oppo.com), Liangliang Han (hanliangliang@oppo.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -119,18 +119,16 @@ class RecurringParser(BaseParser):
     def _parse_period_range(self, token: dict, base_time: datetime) -> List[List[str]]:
         """
         解析周期性时间段
-        对于没有具体时间点的周期表达，返回从base_time到9999年底的时间段
+        对于没有具体时间点的周期表达，返回空列表
 
         Args:
             token: 时间token
             base_time: 基准时间
 
         Returns:
-            list: 时间段 [['start_time', 'end_time']]
+            list: 空列表 []
         """
-        start_time = base_time.strftime("%Y-%m-%dT%H:%M:%SZ")
-        end_time = "9999-12-31T23:59:59Z"
-        return [[start_time, end_time]]
+        return []
 
     def _parse_weekly(self, token: dict, base_time: datetime) -> List[List[str]]:
         """
@@ -143,7 +141,7 @@ class RecurringParser(BaseParser):
             base_time: 基准时间
 
         Returns:
-            list: 时间点列表
+            list: 时间点列表或时间段列表
         """
         weekday_name = token.get("week_day", "").lower()
         if not weekday_name:
@@ -153,11 +151,14 @@ class RecurringParser(BaseParser):
         if weekday_num is None:
             return self._parse_period_range(token, base_time)
 
+        # 检查是否有具体时间（与中文版本保持一致）
+        has_time = bool(token.get("hour") or token.get("minute") or token.get("period"))
+
         # 从配置获取重复次数
         repeat_count = self.recurring_counts.get("week", 52)
 
         # 计算未来N周的所有该星期几
-        time_points = []
+        results = []
         current = base_time
 
         # 找到下一个该星期几
@@ -169,10 +170,41 @@ class RecurringParser(BaseParser):
 
         # 生成未来N周的所有该星期几
         for _ in range(repeat_count):
-            time_points.append(current.strftime("%Y-%m-%dT%H:%M:%SZ"))
+            if has_time:
+                # 有具体时间：返回时间点
+                hour = int(token.get("hour", 0))
+                minute = int(token.get("minute", 0))
+                
+                # 处理period（morning/afternoon/evening等）
+                period = token.get("period", "").lower()
+                if period:
+                    if period in ["morning", "am"]:
+                        hour = 8 if hour == 0 else hour
+                    elif period in ["noon", "midday"]:
+                        hour = 12 if hour == 0 else hour
+                    elif period in ["afternoon", "pm"]:
+                        hour = 14 if hour == 0 else hour
+                        if hour < 12 and hour != 0:
+                            hour += 12
+                    elif period in ["evening", "night"]:
+                        hour = 20 if hour == 0 else hour
+                        if hour < 12:
+                            hour += 12
+                
+                time_point = current.replace(hour=hour, minute=minute, second=0, microsecond=0)
+                results.append([time_point.strftime("%Y-%m-%dT%H:%M:%SZ")])
+            else:
+                # 无具体时间：返回时间段（整天，与中文版本保持一致）
+                start_time = current.replace(hour=0, minute=0, second=0, microsecond=0)
+                end_time_day = current.replace(hour=23, minute=59, second=59, microsecond=0)
+                results.append([
+                    start_time.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                    end_time_day.strftime("%Y-%m-%dT%H:%M:%SZ")
+                ])
+            
             current += timedelta(days=7)
 
-        return [time_points] if time_points else self._parse_period_range(token, base_time)
+        return results if results else self._parse_period_range(token, base_time)
 
     def _parse_monthly(self, token: dict, base_time: datetime) -> List[List[str]]:
         """

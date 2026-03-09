@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import copy
 from datetime import datetime
 
 from .parser import (
@@ -88,6 +89,9 @@ class TimeParser:
 
         if not tokens:
             return []
+
+        # 深拷贝tokens，避免修改缓存中的数据
+        tokens = copy.deepcopy(tokens)
 
         # 过滤时间词歧义（"X点"的非时间语义）
         if original_query:

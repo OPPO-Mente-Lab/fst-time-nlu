@@ -1,4 +1,4 @@
-# Copyright (c) 2025 Ming Yu (yuming@oppo.com)
+# Copyright (c) 2025 Ming Yu (yuming@oppo.com), Liangliang Han (hanliangliang@oppo.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -57,9 +57,13 @@ class ModifierMerger:
             # Apply modifier to base_time
             if modifier > 0:
                 # "next" - add 1 week
+                from datetime import timedelta
+
                 modified_base = base_time + timedelta(weeks=1)
             elif modifier < 0:
                 # "last" - subtract 1 week
+                from datetime import timedelta
+
                 modified_base = base_time + timedelta(weeks=-1)
             else:
                 # "this" - use current week
@@ -79,6 +83,8 @@ class ModifierMerger:
         Based on the test case, this means 2 weeks from now
         """
         try:
+            from datetime import timedelta
+
             # "week after next" = 2 weeks from now
             target_date = base_time + timedelta(weeks=2)
 
@@ -154,6 +160,8 @@ class ModifierMerger:
             target_year = next_occurrence_year + 1
 
             # Compute month range
+            from datetime import datetime
+
             start_of_month = base_time.replace(
                 year=target_year,
                 month=target_month,
@@ -283,6 +291,8 @@ class ModifierMerger:
                     year_offset = int(offset_year) if offset_year else 0
                     month_offset = int(offset_month) if offset_month else 0
 
+                    from datetime import timedelta
+
                     modified_time = base_time + timedelta(days=day_offset)
                     modified_time = modified_time + relativedelta(
                         years=year_offset, months=month_offset
@@ -341,6 +351,8 @@ class ModifierMerger:
             tuple: (single_day_results, 1) or None
         """
         try:
+            from datetime import datetime, timedelta
+
             weekday = weekday_token.get("week_day", "").strip('"').lower()
             if not weekday:
                 return None
@@ -537,6 +549,7 @@ class ModifierMerger:
                     )
                 else:
                     # 如果base_parser没有这个方法，直接在这里实现
+                    from datetime import datetime, timedelta
                     import calendar
 
                     # 转换星期几名称为数字（0=Monday, 6=Sunday）

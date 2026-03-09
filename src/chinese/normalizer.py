@@ -1,4 +1,4 @@
-# Copyright (c) 2025 Ming Yu (yuming@oppo.com)
+# Copyright (c) 2025 Ming Yu (yuming@oppo.com), Liangliang Han (hanliangliang@oppo.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -57,6 +57,7 @@ class Normalizer(Processor):
         full_to_half=True,
         tag_oov=False,
         use_word_level: bool = True,
+        include_source: bool = True,
     ):
         super().__init__(name="zh_normalizer")
         self.logger = get_logger(__name__)
@@ -66,6 +67,7 @@ class Normalizer(Processor):
         self.full_to_half = full_to_half
         self.tag_oov = tag_oov
         self.use_word_level = use_word_level
+        self.include_source = include_source
         self.word_tokenizer = None  # 先设为None，在build_fst后再初始化
 
         if cache_dir is None:
@@ -98,9 +100,19 @@ class Normalizer(Processor):
         return fallback
 
     def _tag_single(self, text: str) -> List[Dict[str, Any]]:  # noqa: C901
+        unknown_chars = []  # 保存未知字符列表
+        token_positions = []  # 保存token位置映射
+        is_word_level = False  # 标记是否使用词级FST
         if self.word_tokenizer:
             try:
+                # 在process_text之前重置tokenizer状态
+                self.word_tokenizer.reset_stats()
                 escaped_text = self.word_tokenizer.process_text(text)
+                # 获取未知字符列表
+                unknown_chars = self.word_tokenizer.get_unknown_chars()
+                # 获取token位置映射
+                token_positions = self.word_tokenizer.get_token_positions()
+                is_word_level = True
 
                 input_sym = escaped_text.input_symbols()
                 tagger_input_sym = self.tagger.input_symbols()
@@ -131,10 +143,19 @@ class Normalizer(Processor):
             if shortest.num_states() == 0:
                 return []
 
+            input_string = None  # 输入字符串（用于对齐）
             if self.word_tokenizer and shortest.output_symbols():
                 try:
                     sym = shortest.output_symbols()
                     tagged_text = shortest.string(token_type=sym)
+                    # 提取输入字符串（词级FST）：使用input_symbols解码
+                    input_sym = shortest.input_symbols()
+                    if input_sym:
+                        input_string = shortest.string(token_type=input_sym)
+                    else:
+                        # 如果没有input_symbols，使用tokenizer记录的token序列
+                        # 这里我们使用token_positions来重建输入字符串
+                        input_string = None  # 将在后续使用token_positions
                 except Exception as e:
                     logger = logging.getLogger(f"fst_time-{self.name}")
                     logger.warning(f"词级FST string(token_type=sym)失败: {e}, 文本: {text[:50]}")
@@ -142,6 +163,8 @@ class Normalizer(Processor):
             else:
                 try:
                     tagged_text = shortest.string()
+                    # 字符级FST：输入就是原始文本
+                    input_string = text
                 except Exception as e:
                     logger = logging.getLogger(f"fst_time-{self.name}")
                     logger.warning(f"FST string()失败: {e}, 文本: {text[:50]}")
@@ -150,7 +173,26 @@ class Normalizer(Processor):
             if not tagged_text:
                 return []
 
-            return self.parse_tags(tagged_text)
+            tags = self.parse_tags(tagged_text, input_text=text, input_string=input_string, 
+                                  token_positions=token_positions, is_word_level=is_word_level,
+                                  include_source=self.include_source)
+            
+            # 处理unknown_char：将__unknown_char__替换为实际字符
+            if unknown_chars and self.word_tokenizer:
+                unknown_char_index = 0
+                for tag in tags:
+                    if tag.get("type") == "char" and tag.get("value") == "__unknown_char__":
+                        if unknown_char_index < len(unknown_chars):
+                            tag["value"] = unknown_chars[unknown_char_index]
+                            unknown_char_index += 1
+                        else:
+                            # 如果未知字符列表已用完，保留占位符（这种情况不应该发生）
+                            logger = logging.getLogger(f"fst_time-{self.name}")
+                            logger.warning(
+                                f"未知字符列表已用完，但仍有__unknown_char__需要替换, 文本: {text[:50]}"
+                            )
+            
+            return tags
         except Exception as e:
             logger = logging.getLogger(f"fst_time-{self.name}")
             logger.warning(f"FST匹配失败: {e}, 文本: {text[:50]}")
@@ -206,8 +248,27 @@ class Normalizer(Processor):
 
             # 使用词级insert拼接3个token：
             # 'char{value:"' + token + '"}'
-            arc = word_pynutil.insert('char{value:"') + accep(token) + word_pynutil.insert('"}')
-            skip_arcs.append(arc)
+            try:
+                # 直接从token ID创建FST，避免token被拆分
+                # 创建一个单token的FST
+                token_fst = pynini.Fst()
+                token_fst.set_input_symbols(sym)
+                token_fst.set_output_symbols(sym)
+                s0 = token_fst.add_state()
+                s1 = token_fst.add_state()
+                token_fst.set_start(s0)
+                token_fst.set_final(s1)
+                arc = pynini.Arc(idx, idx, pynini.Weight.one(token_fst.weight_type()), s1)
+                token_fst.add_arc(s0, arc)
+                
+                # 拼接：'char{value:"' + token + '"}'
+                arc = word_pynutil.insert('char{value:"') + token_fst + word_pynutil.insert('"}')
+                skip_arcs.append(arc)
+            except Exception as e:
+                # 如果某个token无法创建FST，记录警告并跳过
+                logger = logging.getLogger(f"fst_time-{self.name}")
+                logger.debug(f"跳过无法创建FST的token: {token}, 错误: {e}")
+                continue
 
         # Union所有token的规则（一次性union，避免O(n²)复杂度）
         if skip_arcs:

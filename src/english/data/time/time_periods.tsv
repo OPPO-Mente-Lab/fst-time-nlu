@@ -6,5 +6,7 @@ noon	noon
 midnight	midnight
 midday	noon
 dawn	dawn
+sunrise	sunrise
 dusk	dusk
-twilight	twilight 
+twilight	twilight
+daytime	daytime

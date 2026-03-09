@@ -423,6 +423,8 @@ class GlobalSymbolTable:
             "period_word",
             'char{value:"',
             '"}',  # 用于skip_rule的固定token
+            '__long_number__',  # 长数字占位符
+            '__unknown_char__',  # 未知字符占位符
         ]
         for token in supplemental_tokens:
             self._add_token(token)
@@ -537,6 +539,7 @@ def get_symbol_table() -> pynini.SymbolTable:
 
 
 def get_input_tokens() -> set[str]:
+    global _INPUT_TOKENS
     if _INPUT_TOKENS is None:
         get_symbol_table()
     return _INPUT_TOKENS or set()

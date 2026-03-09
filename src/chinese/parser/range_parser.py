@@ -1,4 +1,4 @@
-# Copyright (c) 2025 Ming Yu (yuming@oppo.com)
+# Copyright (c) 2025 Ming Yu (yuming@oppo.com), Liangliang Han (hanliangliang@oppo.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -84,14 +84,14 @@ class RangeParser(BaseParser):
         # 根据范围类型和时间单位计算时间范围
         if range_type in ["ago", "within", "between", "during"]:
             # 过去时间范围：从过去某个时间点到现在的范围
-            return self._handle_ago_range(base_time, value, unit)
+            return self._handle_ago_range(token, base_time, value, unit)
         elif range_type == "future":
             # 未来时间范围：从现在到未来某个时间点的范围
             return self._handle_future_range(base_time, value, unit)
         else:
             return []
 
-    def _handle_ago_range(self, base_time, value, unit):
+    def _handle_ago_range(self, token, base_time, value, unit):
         """
         处理时间范围（从过去某个时间点到现在的范围）
         适用于：以来、以内、间、期间等所有范围限定词
@@ -105,10 +105,44 @@ class RangeParser(BaseParser):
             list: 时间范围列表
         """
         # 计算起始时间（过去某个时间点）
-        start_time = self._subtract_time(base_time, value, unit)
-        # 结束时间就是当前时间
-        end_time = base_time
+        # 注意：仅对带明确前缀的表达式做“口径化”处理：
+        #
+        # 1) “最近/近 + X +（天/周/月/年）”：结束时间取当天23:59:59（更符合检索口径）
+        # 2) “过去 + X +（天/周/月/年）”：结束时间取当前时刻；起始按“含今天的自然日窗口”对齐到00:00:00
+        #
+        # 其他（如“X天以来/以内/期间/间”）保持原有精确减法逻辑，避免影响既有规则。
+        # - 起始：base_time - X单位 + 1天，对齐到00:00:00
+        # - 结束：base_time（当前时刻）
+        src = token.get("source", "") if isinstance(token, dict) else ""
 
+        # 1) 最近/近 前缀（source通常为“最/近”单字）
+        if src in {"最", "近"} and unit in {"day", "week", "month", "year"}:
+            start_time = self._subtract_time(base_time, value, unit)
+            start_of_day, _ = self._get_day_range(start_time)
+            _, end_of_day = self._get_day_range(base_time)
+            return self._format_time_result(start_of_day, end_of_day)
+
+        # 2) 过去 前缀（source通常为"过"单字，或原文以"过去"开头）
+        if (src == "过" or src.startswith("过去")) and unit in {"day", "week", "month", "year"}:
+            # "过去N天"语义：含今天的N个自然日窗口
+            # 例如：过去7天 = 今天+过去6天，起始为(base_time - 6天).日初
+            # 转换为天数计算
+            if unit == "day":
+                days = value
+            elif unit == "week":
+                days = value * 7
+            elif unit == "month":
+                days = value * 30
+            elif unit == "year":
+                days = value * 365
+            
+            # 减去(N-1)天，然后对齐到日初
+            start_time = base_time - timedelta(days=days - 1)
+            start_of_day, _ = self._get_day_range(start_time)
+            return self._format_time_result(start_of_day, base_time)
+
+        start_time = self._subtract_time(base_time, value, unit)
+        end_time = base_time
         return self._format_time_result(start_time, end_time)
 
     def _handle_future_range(self, base_time, value, unit):
@@ -233,18 +267,19 @@ class RangeParser(BaseParser):
             list: 时间范围列表
         """
         if ji_range_type == "bidirectional":
-            # 最近几天：七天前到七天后
-            start_time = base_time - timedelta(days=value)
+            # 最近几天：过去7天（含今天）+ 未来7天
+            # past：base_time - (value-1) 天，对齐到00:00:00
+            # future：base_time + value 天，对齐到23:59:59
+            start_time = base_time - timedelta(days=value - 1)
             end_time = base_time + timedelta(days=value)
             start_of_day, _ = self._get_day_range(start_time)
             _, end_of_day = self._get_day_range(end_time)
             return self._format_time_result(start_of_day, end_of_day)
         else:
-            # 过去几天/这几天/近几天：七天前到今天
-            start_time = base_time - timedelta(days=value)
+            # 过去几天/这几天/近几天：过去7天（含今天）到当前时刻
+            start_time = base_time - timedelta(days=value - 1)
             start_of_day, _ = self._get_day_range(start_time)
-            _, end_of_day = self._get_day_range(base_time)
-            return self._format_time_result(start_of_day, end_of_day)
+            return self._format_time_result(start_of_day, base_time)
 
     def _handle_ji_week(self, base_time, value):
         """

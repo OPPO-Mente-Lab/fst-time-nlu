@@ -1,4 +1,4 @@
-# Copyright (c) 2025 Ming Yu (yuming@oppo.com)
+# Copyright (c) 2025 Ming Yu (yuming@oppo.com), Liangliang Han (hanliangliang@oppo.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -497,6 +497,7 @@ class DeltaMerger:
                 return None
 
             # 6. 判断是否为未来时间
+            from datetime import datetime
 
             start_str = result[0][0]
 
@@ -505,6 +506,7 @@ class DeltaMerger:
                 start_time = parse_datetime_from_str(start_str)
                 # 确保时区信息一致
                 if start_time.tzinfo is None:
+                    from datetime import timezone
 
                     start_time = start_time.replace(tzinfo=timezone.utc)
             except Exception:

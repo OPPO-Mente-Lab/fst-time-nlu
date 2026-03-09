@@ -1,4 +1,4 @@
-# Copyright (c) 2025 Ming Yu
+# Copyright (c) 2025 Ming Yu (yuming@oppo.com), Liangliang Han (hanliangliang@oppo.com)
 # Licensed under the Apache License, Version 2.0
 
 from typing import Optional

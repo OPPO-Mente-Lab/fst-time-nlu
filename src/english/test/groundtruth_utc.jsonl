@@ -88,8 +88,8 @@
 {"query": "dusk", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T17:00:00Z", "2025-01-21T19:00:00Z"]]}
 {"query": "late night", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T23:00:00Z", "2025-01-22T02:00:00Z"]]}
 {"query": "dawn", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T05:00:00Z", "2025-01-21T07:00:00Z"]]}
-{"query": "morning", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T06:00:00Z", "2025-01-21T12:00:00Z"]]}
-{"query": "afternoon", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T13:00:00Z", "2025-01-21T18:00:00Z"]]}
+{"query": "morning", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T05:00:00Z", "2025-01-21T12:00:00Z"]]}
+{"query": "afternoon", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T12:00:00Z", "2025-01-21T18:00:00Z"]]}
 {"query": "what time does saturday party start", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-11T00:00:00Z", "2025-01-11T23:59:59Z"]]}
 {"query": "i want to go to chiang mai for new year next year, what should i prepare in advance", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2026-01-01T00:00:00Z", "2026-01-01T23:59:59Z"]]}
 {"query": "does anyone ask me out for dinner this friday", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-10T00:00:00Z", "2025-01-10T23:59:59Z"]]}
@@ -118,7 +118,7 @@
 {"query": "august invoices", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-08-01T00:00:00Z", "2025-08-31T23:59:59Z"]]}
 {"query": "last week's invoices", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2024-12-30T00:00:00Z", "2025-01-05T23:59:59Z"]]}
 {"query": "what arrangements do i have tonight at 18:00", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-06T18:00:00Z"]]}
-{"query": "what arrangements do i have this afternoon", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-06T13:00:00Z", "2025-01-06T18:00:00Z"]]}
+{"query": "what arrangements do i have this afternoon", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-06T12:00:00Z", "2025-01-06T18:00:00Z"]]}
 {"query": "what arrangements do i have tomorrow", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-07T00:00:00Z", "2025-01-07T23:59:59Z"]]}
 {"query": "my schedule for the week after next", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-20T00:00:00Z", "2025-01-26T23:59:59Z"]]}
 {"query": "do i have time for afternoon tea tomorrow", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-07T00:00:00Z", "2025-01-07T23:59:59Z"]]}
@@ -244,26 +244,26 @@
 {"query": "6 minutes past 10", "metadata": "2025-07-21T00:00:00Z", "datetime_result": [["2025-07-21T10:06:00Z"]]}
 {"query": "raise temperature to 24.5 degrees", "metadata": "2025-07-25T00:00:00Z", "datetime_result": []}
 {"query": "raise temperature by 10.5 degrees", "metadata": "2025-01-21T08:00:00Z", "datetime_result": []}
-{"query": "yesterday morning", "metadata": "2025-07-25T00:00:00Z", "datetime_result": [["2025-07-24T06:00:00Z", "2025-07-24T12:00:00Z"]]}
-{"query": "monday afternoon", "metadata": "2025-07-21T00:00:00Z", "datetime_result": [["2025-07-21T13:00:00Z", "2025-07-21T18:00:00Z"]]}
+{"query": "yesterday morning", "metadata": "2025-07-25T00:00:00Z", "datetime_result": [["2025-07-24T05:00:00Z", "2025-07-24T12:00:00Z"]]}
+{"query": "monday afternoon", "metadata": "2025-07-21T00:00:00Z", "datetime_result": [["2025-07-21T12:00:00Z", "2025-07-21T18:00:00Z"]]}
 {"query": "last night", "metadata": "2025-07-25T00:00:00Z", "datetime_result": [["2025-07-24T21:00:00Z", "2025-07-24T23:59:59Z"]]}
 {"query": "tonight", "metadata": "2025-07-24T00:00:00Z", "datetime_result": [["2025-07-24T21:00:00Z", "2025-07-24T23:59:59Z"]]}
 {"query": "what have you been doing recently", "metadata": "2025-07-24T08:00:00Z", "datetime_result": [["2025-07-17T00:00:00Z", "2025-07-24T23:59:59Z"]]}
 {"query": "schedule from january 1 to january 6 2025", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-01T00:00:00Z", "2025-01-06T23:59:59Z"]]}
 {"query": "name of hotel checking in tonight", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-06T21:00:00Z", "2025-01-06T23:59:59Z"]]}
-{"query": "address of hotel checking in tomorrow evening", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-07T18:00:00Z", "2025-01-07T23:59:59Z"]]}
-{"query": "morning flight departure time", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-06T06:00:00Z", "2025-01-06T12:00:00Z"]]}
-{"query": "do i have time for tea day after tomorrow afternoon", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-08T13:00:00Z", "2025-01-08T18:00:00Z"]]}
+{"query": "address of hotel checking in tomorrow evening", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-07T18:00:00Z", "2025-01-07T22:00:00Z"]]}
+{"query": "morning flight departure time", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-06T05:00:00Z", "2025-01-06T12:00:00Z"]]}
+{"query": "do i have time for tea day after tomorrow afternoon", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-08T12:00:00Z", "2025-01-08T18:00:00Z"]]}
 {"query": "what is the name of the hotel i'm checking into tonight", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-06T21:00:00Z", "2025-01-06T23:59:59Z"]]}
 {"query": "my flight number tonight", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-06T21:00:00Z", "2025-01-06T23:59:59Z"]]}
 {"query": "what did i eat for lunch", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-06T11:30:00Z", "2025-01-06T14:00:00Z"]]}
-{"query": "what time does tomorrow afternoon's train depart", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-07T13:00:00Z", "2025-01-07T18:00:00Z"]]}
-{"query": "tomorrow evening", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-22T18:00:00Z", "2025-01-22T23:59:59Z"]]}
+{"query": "what time does tomorrow afternoon's train depart", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-07T12:00:00Z", "2025-01-07T18:00:00Z"]]}
+{"query": "tomorrow evening", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-22T18:00:00Z", "2025-01-22T22:00:00Z"]]}
 {"query": "nighttime", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T21:00:00Z", "2025-01-21T23:59:59Z"]]}
-{"query": "evening", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T18:00:00Z", "2025-01-21T23:59:59Z"]]}
-{"query": "morning", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T06:00:00Z", "2025-01-21T12:00:00Z"]]}
+{"query": "evening", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T18:00:00Z", "2025-01-21T22:00:00Z"]]}
+{"query": "morning", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T05:00:00Z", "2025-01-21T12:00:00Z"]]}
 {"query": "noon", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T11:30:00Z", "2025-01-21T14:00:00Z"]]}
-{"query": "afternoon", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T13:00:00Z", "2025-01-21T18:00:00Z"]]}
+{"query": "afternoon", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T12:00:00Z", "2025-01-21T18:00:00Z"]]}
 {"query": "8 to 10 o'clock", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T08:00:00Z", "2025-01-21T10:00:00Z"]]}
 {"query": "mother's day", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-05-11T00:00:00Z", "2025-05-11T23:59:59Z"]]}
 {"query": "how did i arrange previous double ninth festival", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2024-10-11T00:00:00Z", "2024-10-11T23:59:59Z"]]}

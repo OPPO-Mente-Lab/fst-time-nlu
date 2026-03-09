@@ -1,4 +1,4 @@
-# Copyright (c) 2025 Ming Yu (yuming@oppo.com)
+# Copyright (c) 2025 Ming Yu (yuming@oppo.com), Liangliang Han (hanliangliang@oppo.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ from ..merge_utils import (
 )
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
+from ....core.logger import get_logger
 
 
 class PeriodMerger(BaseMerger):
@@ -31,6 +32,11 @@ class PeriodMerger(BaseMerger):
     - 节假日合并
     - 月初/月末处理
     """
+
+    def __init__(self, parsers):
+        """初始化时期合并器"""
+        super().__init__(parsers)
+        self.logger = get_logger(__name__)  # noqa: F841
 
     def try_merge(self, i, tokens, base_time):  # noqa: C901
         """
@@ -96,6 +102,12 @@ class PeriodMerger(BaseMerger):
 
         # 11. 相对年份+初/末
         result = self._merge_relative_year_chu_mo(i, tokens, base_time)
+        if result is not None:
+            return result
+
+        # 12. 年份+前N个月/周/天合并
+        # 例如："今年前两个月" → 今年1-2月
+        result = self._merge_year_forward_period(i, tokens, base_time)
         if result is not None:
             return result
 
@@ -649,5 +661,76 @@ class PeriodMerger(BaseMerger):
                 result = safe_parse(parser, merged_token, base_time)
                 if result:
                     return (result, 2)  # 消耗2个token
+
+        return None
+
+    def _merge_year_forward_period(self, i, tokens, base_time):
+        """
+        处理年份+前N个月/周/天：time_relative(offset_year) + time_period(offset_direction=-1, unit=month/week/day)
+        例如："今年前两个月" → 今年1-2月
+        
+        泛化：适用于"今年/去年/明年 + 前N个月/周/天"的场景
+        """
+        n = len(tokens)
+        if i + 1 >= n:
+            return None
+
+        cur = tokens[i]
+        next1 = tokens[i + 1]
+
+        # 检查：time_relative(有offset_year) + time_period(offset_direction=-1, unit=month/week/day)
+        if (
+            cur.get("type") == "time_relative"
+            and cur.get("offset_year") is not None  # 有年份偏移
+            and next1.get("type") == "time_period"
+            and next1.get("offset_direction") == "-1"  # 前N个
+            and next1.get("unit") in ["month", "week", "day"]  # 月/周/天
+        ):
+            try:
+                from dateutil.relativedelta import relativedelta
+                from datetime import timedelta
+
+                # 计算目标年份
+                year_offset = int(cur.get("offset_year", 0))
+                target_year = base_time.year + year_offset
+
+                # 将基准时间调整为该年的起始时间
+                adjusted_base = base_time.replace(
+                    year=target_year, month=1, day=1, hour=0, minute=0, second=0
+                )
+
+                # 计算"前N个月/周/天"的范围
+                offset_num = int(next1.get("offset", 1))
+                unit = next1.get("unit")
+
+                if unit == "month":
+                    start_time = adjusted_base  # 1月1日
+                    # 计算N月的最后一天
+                    end_month = offset_num
+                    if end_month == 2:
+                        # 2月需要处理闰年
+                        last_day = 29 if calendar.isleap(target_year) else 28
+                    else:
+                        last_day = calendar.monthrange(target_year, end_month)[1]
+                    end_time = adjusted_base.replace(month=end_month, day=last_day, hour=23, minute=59, second=59)
+                elif unit == "week":
+                    start_time = adjusted_base
+                    end_time = adjusted_base + timedelta(weeks=offset_num) - timedelta(days=1)
+                    end_time = end_time.replace(hour=23, minute=59, second=59)
+                elif unit == "day":
+                    start_time = adjusted_base
+                    end_time = adjusted_base + timedelta(days=offset_num) - timedelta(days=1)
+                    end_time = end_time.replace(hour=23, minute=59, second=59)
+                else:
+                    return None
+
+                # 格式化结果
+                period_parser = self.parsers.get("time_period")
+                if period_parser:
+                    result = period_parser._format_time_result(start_time, end_time)
+                    if result:
+                        return (result, 2)  # 消耗2个token
+            except Exception as e:
+                self.logger.debug(f"Error in _merge_year_forward_period: {e}")
 
         return None

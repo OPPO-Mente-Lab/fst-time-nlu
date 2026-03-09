@@ -1,4 +1,4 @@
-# Copyright (c) 2025 Ming Yu (yuming@oppo.com)
+# Copyright (c) 2025 Ming Yu (yuming@oppo.com), Liangliang Han (hanliangliang@oppo.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -49,6 +49,8 @@ class RecurringParser(BaseParser):
                 config = yaml.safe_load(f)
                 self.recurring_counts = config.get("recurring_counts", {})
                 self.default_count = config.get("default", 30)
+                # 加载解析开关，默认False（统一返回空）
+                self.enable_parsing = config.get("enable_recurring_parsing", False)
         except Exception:
             # 如果加载失败，使用默认值
             self.recurring_counts = {
@@ -61,6 +63,7 @@ class RecurringParser(BaseParser):
                 "interval": 30,
             }
             self.default_count = 30
+            self.enable_parsing = False
 
     def parse(self, token, base_time):  # noqa: C901
         """
@@ -73,6 +76,10 @@ class RecurringParser(BaseParser):
         Returns:
             list: 周期时间点列表，或空列表（不解析的类型）
         """
+        # 如果未启用解析功能，统一返回空列表
+        if not self.enable_parsing:
+            return []
+
         recurring_type = token.get("recurring_type")
 
         # 对于没有具体时间点的周期，返回时间段
@@ -189,7 +196,7 @@ class RecurringParser(BaseParser):
 
                 current += timedelta(weeks=1)
 
-        return [results]  # 外层包裹
+        return results
 
     def _parse_monthly(self, token, base_time):
         """
@@ -495,7 +502,7 @@ class RecurringParser(BaseParser):
     def _parse_period_range(self, token, base_time):
         """
         解析周期性时间段
-        对于没有具体时间点的周期表达，返回从base_time到9999年底的时间段
+        对于没有具体时间点的周期表达，返回为空列表
 
         Args:
             token: 时间token
@@ -504,9 +511,10 @@ class RecurringParser(BaseParser):
         Returns:
             list: 时间段 [['start_time', 'end_time']]
         """
-        start_time = base_time.strftime("%Y-%m-%dT%H:%M:%SZ")
-        end_time = "9999-12-31T23:59:59Z"
-        return [[start_time, end_time]]
+        # start_time = base_time.strftime("%Y-%m-%dT%H:%M:%SZ")
+        # end_time = "9999-12-31T23:59:59Z"
+        # return [[start_time, end_time]]
+        return []
 
     def _parse_yearly_holiday(self, token, base_time):
         """

@@ -1,4 +1,4 @@
-# Copyright (c) 2025 Ming Yu (yuming@oppo.com)
+# Copyright (c) 2025 Ming Yu (yuming@oppo.com), Liangliang Han (hanliangliang@oppo.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -182,6 +182,14 @@ def main():  # noqa: C901
         default="chinese",
         help="Language selection for time extraction (chinese/english)",
     )
+
+    # 添加是否显示所有case的参数
+    parser.add_argument(
+        "--show-all",
+        action="store_true",
+        help="Show all test cases (including successful ones) in batch processing mode",
+    )
+
     args = parser.parse_args()
 
     # 参数验证：必须提供 --text 或 --file 之一
@@ -256,7 +264,7 @@ def main():  # noqa: C901
                 benchmark(
                     extractor,
                     args.file,
-                    show_all_cases=SHOW_ALL_CASES,
+                    show_all_cases=args.show_all,
                     writer=writer,
                     language=args.language,
                 )
@@ -265,7 +273,7 @@ def main():  # noqa: C901
             benchmark(
                 extractor,
                 args.file,
-                show_all_cases=SHOW_ALL_CASES,
+                show_all_cases=args.show_all,
                 language=args.language,
             )
 

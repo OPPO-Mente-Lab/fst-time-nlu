@@ -79,12 +79,12 @@
 {"query": "this tuesday", "chinese_translation": "本周二", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T00:00:00Z", "2025-01-21T23:59:59Z"]]}
 {"query": "tomorrow evening 8 o'clock", "chinese_translation": "明晚8点", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-22T20:00:00Z"]]}
 {"query": "tomorrow morning 8 o'clock", "chinese_translation": "明天早上8点", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-22T08:00:00Z"]]}
-{"query": "early morning", "chinese_translation": "早晨", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T06:00:00Z", "2025-01-21T09:00:00Z"]]}
+{"query": "early morning", "chinese_translation": "早晨", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T05:00:00Z", "2025-01-21T08:00:00Z"]]}
 {"query": "dusk", "chinese_translation": "黄昏", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T17:00:00Z", "2025-01-21T19:00:00Z"]]}
 {"query": "late night", "chinese_translation": "大半夜", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T21:00:00Z", "2025-01-22T00:00:00Z"]]}
 {"query": "dawn", "chinese_translation": "黎明", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T05:00:00Z", "2025-01-21T07:00:00Z"]]}
-{"query": "morning", "chinese_translation": "早上", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T06:00:00Z", "2025-01-21T12:00:00Z"]]}
-{"query": "afternoon", "chinese_translation": "下午", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T13:00:00Z", "2025-01-21T18:00:00Z"]]}
+{"query": "morning", "chinese_translation": "早上", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T05:00:00Z", "2025-01-21T12:00:00Z"]]}
+{"query": "afternoon", "chinese_translation": "下午", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T12:00:00Z", "2025-01-21T18:00:00Z"]]}
 {"query": "what time does saturday party start", "chinese_translation": "周六派对什么时候开始", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-11T00:00:00Z", "2025-01-11T23:59:59Z"]]}
 {"query": "what do i need to prepare in advance if i want to go to chiang mai next new year's day", "chinese_translation": "明年元旦想去清迈，我要提前准备什么", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2026-01-01T00:00:00Z", "2026-01-01T23:59:59Z"]]}
 {"query": "does anyone ask me out for dinner this friday", "chinese_translation": "这周五有没有人约我出去吃晚饭", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-10T00:00:00Z", "2025-01-10T23:59:59Z"]]}
@@ -113,7 +113,7 @@
 {"query": "august invoices", "chinese_translation": "8月发票", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-08-01T00:00:00Z", "2025-08-31T23:59:59Z"]]}
 {"query": "last week's invoices", "chinese_translation": "上周的发票", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2024-12-30T00:00:00Z", "2025-01-05T23:59:59Z"]]}
 {"query": "what arrangements do i have tonight at 18:00", "chinese_translation": "我今晚18点有什么安排", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-06T18:00:00Z"]]}
-{"query": "what arrangements do i have this afternoon", "chinese_translation": "我今天下午有什么安排", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-06T13:00:00Z", "2025-01-06T18:00:00Z"]]}
+{"query": "what arrangements do i have this afternoon", "chinese_translation": "我今天下午有什么安排", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-06T12:00:00Z", "2025-01-06T18:00:00Z"]]}
 {"query": "what arrangements do i have tomorrow", "chinese_translation": "我明天有什么安排", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-07T00:00:00Z", "2025-01-07T23:59:59Z"]]}
 {"query": "my schedule for the week after next", "chinese_translation": "我下下周的日程安排", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-20T00:00:00Z", "2025-01-26T23:59:59Z"]]}
 {"query": "do i have time for afternoon tea tomorrow", "chinese_translation": "明天我有时间喝下午茶吗", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-07T00:00:00Z", "2025-01-07T23:59:59Z"]]}
@@ -235,26 +235,26 @@
 {"query": "6 minutes past 10", "chinese_translation": "10点过6分", "metadata": "2025-07-21T00:00:00Z", "datetime_result": [["2025-07-21T10:06:00Z"]]}
 {"query": "raise temperature to 24.5 degrees", "chinese_translation": "将温度提高到24.5度", "metadata": "2025-07-25T00:00:00Z", "datetime_result": []}
 {"query": "raise temperature by 10.5 degrees", "chinese_translation": "将温度提高10.5度", "metadata": "2025-01-21T08:00:00Z", "datetime_result": []}
-{"query": "yesterday morning", "chinese_translation": "昨天", "metadata": "2025-07-25T00:00:00Z", "datetime_result": [["2025-07-24T06:00:00Z", "2025-07-24T12:00:00Z"]]}
-{"query": "monday afternoon", "chinese_translation": "周一下午", "metadata": "2025-07-21T00:00:00Z", "datetime_result": [["2025-07-21T13:00:00Z", "2025-07-21T18:00:00Z"]]}
+{"query": "yesterday morning", "chinese_translation": "昨天", "metadata": "2025-07-25T00:00:00Z", "datetime_result": [["2025-07-24T05:00:00Z", "2025-07-24T12:00:00Z"]]}
+{"query": "monday afternoon", "chinese_translation": "周一下午", "metadata": "2025-07-21T00:00:00Z", "datetime_result": [["2025-07-21T12:00:00Z", "2025-07-21T18:00:00Z"]]}
 {"query": "last night", "chinese_translation": "昨晚", "metadata": "2025-07-25T00:00:00Z", "datetime_result": [["2025-07-24T18:00:00Z", "2025-07-24T23:59:59Z"]]}
 {"query": "tonight", "chinese_translation": "今晚", "metadata": "2025-07-24T00:00:00Z", "datetime_result": [["2025-07-24T18:00:00Z", "2025-07-24T23:59:59Z"]]}
 {"query": "what have you been doing recently", "chinese_translation": "你最近在做什么", "metadata": "2025-07-24T08:00:00Z", "datetime_result": [["2025-07-17T00:00:00Z", "2025-07-24T23:59:59Z"]]}
 {"query": "schedule from january 1 to january 6 2025", "chinese_translation": "2025年1月1日到1月6日的日程安排", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-01T00:00:00Z", "2025-01-06T23:59:59Z"]]}
 {"query": "name of hotel checking in tonight", "chinese_translation": "今晚入住的酒店名称", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-06T18:00:00Z", "2025-01-06T23:59:59Z"]]}
-{"query": "address of hotel checking in tomorrow evening", "chinese_translation": "明晚入住的酒店地址", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-07T18:00:00Z", "2025-01-07T23:59:59Z"]]}
-{"query": "morning flight departure time", "chinese_translation": "早班航班起飞时间", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-06T06:00:00Z", "2025-01-06T12:00:00Z"]]}
-{"query": "do i have time for tea day after tomorrow afternoon", "chinese_translation": "后天下午我有时间喝茶吗", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-08T13:00:00Z", "2025-01-08T18:00:00Z"]]}
+{"query": "address of hotel checking in tomorrow evening", "chinese_translation": "明晚入住的酒店地址", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-07T18:00:00Z", "2025-01-07T22:00:00Z"]]}
+{"query": "morning flight departure time", "chinese_translation": "早班航班起飞时间", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-06T05:00:00Z", "2025-01-06T12:00:00Z"]]}
+{"query": "do i have time for tea day after tomorrow afternoon", "chinese_translation": "后天下午我有时间喝茶吗", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-08T12:00:00Z", "2025-01-08T18:00:00Z"]]}
 {"query": "what is the name of the hotel i'm checking into tonight", "chinese_translation": "我今晚入住的酒店叫什么名字", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-06T18:00:00Z", "2025-01-06T23:59:59Z"]]}
 {"query": "my flight number tonight", "chinese_translation": "我今晚的航班号", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-06T18:00:00Z", "2025-01-06T23:59:59Z"]]}
 {"query": "What did i eat this noon", "chinese_translation": "我中午吃了什么", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-06T11:30:00Z", "2025-01-06T14:00:00Z"]]}
-{"query": "what time does tomorrow afternoon's train depart", "chinese_translation": "明天下午的火车什么时候出发", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-07T13:00:00Z", "2025-01-07T18:00:00Z"]]}
-{"query": "tomorrow evening", "chinese_translation": "明天晚上", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-22T18:00:00Z", "2025-01-22T23:59:59Z"]]}
+{"query": "what time does tomorrow afternoon's train depart", "chinese_translation": "明天下午的火车什么时候出发", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2025-01-07T12:00:00Z", "2025-01-07T18:00:00Z"]]}
+{"query": "tomorrow evening", "chinese_translation": "明天晚上", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-22T18:00:00Z", "2025-01-22T22:00:00Z"]]}
 {"query": "nighttime", "chinese_translation": "夜间", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T18:00:00Z", "2025-01-21T23:59:59Z"]]}
-{"query": "evening", "chinese_translation": "晚上", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T18:00:00Z", "2025-01-21T23:59:59Z"]]}
-{"query": "morning", "chinese_translation": "早上", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T06:00:00Z", "2025-01-21T12:00:00Z"]]}
+{"query": "evening", "chinese_translation": "晚上", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T18:00:00Z", "2025-01-21T22:00:00Z"]]}
+{"query": "morning", "chinese_translation": "早上", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T05:00:00Z", "2025-01-21T12:00:00Z"]]}
 {"query": "noon", "chinese_translation": "中午", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T11:30:00Z", "2025-01-21T14:00:00Z"]]}
-{"query": "afternoon", "chinese_translation": "下午", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T13:00:00Z", "2025-01-21T18:00:00Z"]]}
+{"query": "afternoon", "chinese_translation": "下午", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T12:00:00Z", "2025-01-21T18:00:00Z"]]}
 {"query": "8 to 10 o'clock", "chinese_translation": "8点到10点", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-01-21T08:00:00Z", "2025-01-21T10:00:00Z"]]}
 {"query": "mother's day", "chinese_translation": "母亲节", "metadata": "2025-01-21T08:00:00Z", "datetime_result": [["2025-05-11T00:00:00Z", "2025-05-11T23:59:59Z"]]}
 {"query": "how did i arrange previous double ninth festival", "chinese_translation": "我以前是如何安排重阳节的", "metadata": "2025-01-06T00:00:00Z", "datetime_result": [["2024-10-11T00:00:00Z", "2024-10-11T23:59:59Z"]]}

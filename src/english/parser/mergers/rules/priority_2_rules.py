@@ -1,4 +1,4 @@
-# Copyright (c) 2025 Ming Yu (yuming@oppo.com)
+# Copyright (c) 2025 Ming Yu (yuming@oppo.com), Liangliang Han (hanliangliang@oppo.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -95,10 +95,41 @@ class Priority2Rules(BaseRule):
         # Pattern: time_period(noon) + token("of") + time_holiday(festival) (+ time_utc(year))
         # Example: "morning of xmas" -> christmas morning
         # Example: "morning of christmas 2013" -> christmas morning in 2013
+        # Example: "morning of this christmas day" -> this christmas morning
         if cur_type == "time_period" and i + 2 < n:
             # Check for "of" token
             of_token = tokens[i + 1]
-            holiday_token = tokens[i + 2]
+            next_token = tokens[i + 2]
+            
+            # Case 1: period + of + modifier + holiday (e.g., "morning of this christmas")
+            if (
+                of_token.get("type") == "token"
+                and of_token.get("value", "").lower() == "of"
+                and next_token.get("type") == "time_composite_relative"
+                and i + 3 < n
+            ):
+                modifier_token = next_token
+                holiday_token = tokens[i + 3]
+                if holiday_token.get("type") == "time_holiday":
+                    # Merge modifier with holiday first
+                    merged_holiday = self.context_merger.holiday_merger.merge_modifier_with_holiday(
+                        modifier_token, holiday_token, base_time
+                    )
+                    if merged_holiday and merged_holiday[0]:
+                        # Get the holiday date
+                        from ...time_utils import parse_datetime_str
+
+                        holiday_date_str = merged_holiday[0][0]
+                        holiday_date = parse_datetime_str(holiday_date_str)
+                        # Now apply the period to this date
+                        period_parser = self.parsers.get("time_period")
+                        if period_parser:
+                            period_result = period_parser.parse(cur, holiday_date)
+                            if period_result:
+                                return period_result, 4  # Skip all four tokens
+            
+            # Case 2: period + of + holiday (e.g., "morning of christmas")
+            holiday_token = next_token
             if (
                 of_token.get("type") == "token"
                 and of_token.get("value", "").lower() == "of"

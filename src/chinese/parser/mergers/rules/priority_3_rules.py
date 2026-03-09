@@ -1,4 +1,4 @@
-# Copyright (c) 2025 Ming Yu (yuming@oppo.com)
+# Copyright (c) 2025 Ming Yu (yuming@oppo.com), Liangliang Han (hanliangliang@oppo.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -71,6 +71,11 @@ class Priority3Rules(BaseRule):
 
         # 7. time_utc(year) + time_between(hour) + time_between(month) → 年份+省略月份区间
         result = self._merge_utc_year_hour_month_range(i, tokens, base_time)
+        if result is not None:
+            return result
+
+        # 8. time_relative(noon) + time_utc(noon, hour) → 时段词冲突，优先精确时间
+        result = self._merge_relative_utc_noon_conflict(i, tokens, base_time)
         if result is not None:
             return result
 
@@ -318,6 +323,55 @@ class Priority3Rules(BaseRule):
             except Exception:
                 pass
             return None
+
+        return None
+
+    def _merge_relative_utc_noon_conflict(self, i, tokens, base_time):
+        """
+        处理时段词冲突：time_relative(有noon) + time_utc(有noon且更精确)
+        例如："明天早上凌晨3:00" → 优先使用"凌晨3:00"，继承"明天"的日期偏移
+        
+        泛化：适用于所有"相对日期+时段词+精确时间"的场景
+        """
+        n = len(tokens)
+        if i + 1 >= n:
+            return None
+
+        cur = tokens[i]
+        next1 = tokens[i + 1]
+
+        # 检查：time_relative(有noon和日期偏移) + time_utc(有noon和hour)
+        if (
+            cur.get("type") == "time_relative"
+            and cur.get("noon")  # 有时段词
+            and (
+                cur.get("offset_day")
+                or cur.get("offset_month")
+                or cur.get("offset_year")
+            )  # 有日期偏移
+            and next1.get("type") == "time_utc"
+            and next1.get("noon")  # 也有时段词
+            and next1.get("hour")  # 有精确小时，更精确
+        ):
+            try:
+                # 优先使用time_utc的精确时间，继承time_relative的日期偏移
+                merged_token = dict(next1)  # 以time_utc为基础
+                # 继承日期偏移
+                if cur.get("offset_day"):
+                    merged_token["offset_day"] = cur.get("offset_day")
+                if cur.get("offset_month"):
+                    merged_token["offset_month"] = cur.get("offset_month")
+                if cur.get("offset_year"):
+                    merged_token["offset_year"] = cur.get("offset_year")
+
+                # 解析合并后的token
+                utc_parser = self.parsers.get("time_utc")
+                if utc_parser:
+                    result = utc_parser.parse(merged_token, base_time)
+                    if result:
+                        return (result, 2)  # 消耗2个token
+            except Exception as e:
+                self.logger.debug(f"Error in _merge_relative_utc_noon_conflict: {e}")
 
         return None
 
