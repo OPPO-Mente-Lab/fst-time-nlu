@@ -102,8 +102,6 @@ def get_logger(name: str) -> logging.Logger:
     Returns:
         logging.Logger: 配置好的日志器实例
     """
-    global _configured
-
     # 如果还没配置过，使用默认配置
     if not _configured:
         setup_logging()

@@ -539,7 +539,6 @@ def get_symbol_table() -> pynini.SymbolTable:
 
 
 def get_input_tokens() -> set[str]:
-    global _INPUT_TOKENS
     if _INPUT_TOKENS is None:
         get_symbol_table()
     return _INPUT_TOKENS or set()
