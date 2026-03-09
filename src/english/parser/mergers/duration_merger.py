@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from datetime import datetime, timedelta
+from datetime import timedelta
 from dateutil.relativedelta import relativedelta
 from ....core.logger import get_logger
 from ..time_utils import (
@@ -289,8 +289,6 @@ class DurationMerger:
             start_time_str = time_result[0][0]
 
             # 5. 计算结束时间
-            from datetime import datetime, timedelta
-
             start_time = parse_datetime_from_str(start_time_str)
 
             # 应用duration

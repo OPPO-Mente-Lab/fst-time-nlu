@@ -330,7 +330,7 @@ class Priority3Rules(BaseRule):
         """
         处理时段词冲突：time_relative(有noon) + time_utc(有noon且更精确)
         例如："明天早上凌晨3:00" → 优先使用"凌晨3:00"，继承"明天"的日期偏移
-        
+
         泛化：适用于所有"相对日期+时段词+精确时间"的场景
         """
         n = len(tokens)
@@ -345,9 +345,7 @@ class Priority3Rules(BaseRule):
             cur.get("type") == "time_relative"
             and cur.get("noon")  # 有时段词
             and (
-                cur.get("offset_day")
-                or cur.get("offset_month")
-                or cur.get("offset_year")
+                cur.get("offset_day") or cur.get("offset_month") or cur.get("offset_year")
             )  # 有日期偏移
             and next1.get("type") == "time_utc"
             and next1.get("noon")  # 也有时段词

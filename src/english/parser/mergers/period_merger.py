@@ -85,8 +85,6 @@ class PeriodMerger:
                     if holiday_result and len(holiday_result) > 0:
                         # Extract date from holiday result
                         holiday_time_str = holiday_result[0][0]  # Start time
-                        from datetime import datetime
-
                         target_date = parse_datetime_str(holiday_time_str).replace(tzinfo=None)
 
             elif date_token.get("type") == "time_weekday":
@@ -221,8 +219,6 @@ class PeriodMerger:
                 return None
 
             # Calculate time range based on period
-            from datetime import datetime
-
             if period_word in ["end"]:
                 # End of year: November - December
                 start_time = datetime(year, 11, 1, 0, 0, 0)
@@ -283,7 +279,6 @@ class PeriodMerger:
             if month_num < base_time.month:
                 target_year += 1
 
-            from datetime import datetime, timedelta
             import calendar
 
             if week_period == "weekend":

@@ -174,7 +174,7 @@ class RecurringParser(BaseParser):
                 # 有具体时间：返回时间点
                 hour = int(token.get("hour", 0))
                 minute = int(token.get("minute", 0))
-                
+
                 # 处理period（morning/afternoon/evening等）
                 period = token.get("period", "").lower()
                 if period:
@@ -190,18 +190,20 @@ class RecurringParser(BaseParser):
                         hour = 20 if hour == 0 else hour
                         if hour < 12:
                             hour += 12
-                
+
                 time_point = current.replace(hour=hour, minute=minute, second=0, microsecond=0)
                 results.append([time_point.strftime("%Y-%m-%dT%H:%M:%SZ")])
             else:
                 # 无具体时间：返回时间段（整天，与中文版本保持一致）
                 start_time = current.replace(hour=0, minute=0, second=0, microsecond=0)
                 end_time_day = current.replace(hour=23, minute=59, second=59, microsecond=0)
-                results.append([
-                    start_time.strftime("%Y-%m-%dT%H:%M:%SZ"),
-                    end_time_day.strftime("%Y-%m-%dT%H:%M:%SZ")
-                ])
-            
+                results.append(
+                    [
+                        start_time.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                        end_time_day.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                    ]
+                )
+
             current += timedelta(days=7)
 
         return results if results else self._parse_period_range(token, base_time)

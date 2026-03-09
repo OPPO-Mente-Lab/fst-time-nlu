@@ -65,16 +65,16 @@ class BaseParser(ABC):
                 12,
                 0,
                 0,
-            ),  # 5:00 AM - 12:00 PM 
-            "afternoon": (0, 12, 0, 0, 0, 18, 0, 0),  # 12:00 PM - 6:00 PM 
-            "evening": (0, 18, 0, 0, 0, 22, 0, 0),  # 6:00 PM - 10:00 PM 
-            "night": (0, 18, 0, 0, 0, 23, 59, 59),  # 6:00 PM - 11:59:59 PM 
-            "tonight": (0, 18, 0, 0, 0, 23, 59, 59),  # 6:00 PM - 11:59:59 PM 
+            ),  # 5:00 AM - 12:00 PM
+            "afternoon": (0, 12, 0, 0, 0, 18, 0, 0),  # 12:00 PM - 6:00 PM
+            "evening": (0, 18, 0, 0, 0, 22, 0, 0),  # 6:00 PM - 10:00 PM
+            "night": (0, 18, 0, 0, 0, 23, 59, 59),  # 6:00 PM - 11:59:59 PM
+            "tonight": (0, 18, 0, 0, 0, 23, 59, 59),  # 6:00 PM - 11:59:59 PM
             "noon": (0, 11, 30, 0, 0, 14, 0, 0),  # 11:30 AM - 2:00 PM
             "midday": (0, 11, 30, 0, 0, 14, 0, 0),  # 11:30 AM - 2:00 PM
             "midnight": (0, 0, 0, 0, 0, 0, 0, 0),  # 12:00 AM (single point)
             "dawn": (0, 5, 0, 0, 0, 7, 0, 0),  # 5:00 AM - 7:00 AM
-            "sunrise": (0, 5, 0, 0, 0, 7, 0, 0),  # 5:00 AM - 7:00 AM 
+            "sunrise": (0, 5, 0, 0, 0, 7, 0, 0),  # 5:00 AM - 7:00 AM
             "dusk": (0, 17, 0, 0, 0, 19, 0, 0),  # 5:00 PM - 7:00 PM
             "twilight": (0, 17, 30, 0, 0, 19, 30, 0),  # 5:30 PM - 7:30 PM
             # Meal times
@@ -82,10 +82,10 @@ class BaseParser(ABC):
             "lunch": (0, 11, 30, 0, 0, 14, 0, 0),  # 11:30 AM - 2:00 PM
             "dinner": (0, 17, 30, 0, 0, 20, 0, 0),  # 5:30 PM - 8:00 PM
             # Extended periods
-            "early_morning": (0, 5, 0, 0, 0, 8, 0, 0),  # 5:00 AM - 8:00 AM 
-            "early morning": (0, 5, 0, 0, 0, 8, 0, 0),  # 5:00 AM - 8:00 AM 
-            "late_morning": (0, 10, 0, 0, 0, 12, 0, 0),  # 10:00 AM - 12:00 PM 
-            "late morning": (0, 10, 0, 0, 0, 12, 0, 0),  # 10:00 AM - 12:00 PM 
+            "early_morning": (0, 5, 0, 0, 0, 8, 0, 0),  # 5:00 AM - 8:00 AM
+            "early morning": (0, 5, 0, 0, 0, 8, 0, 0),  # 5:00 AM - 8:00 AM
+            "late_morning": (0, 10, 0, 0, 0, 12, 0, 0),  # 10:00 AM - 12:00 PM
+            "late morning": (0, 10, 0, 0, 0, 12, 0, 0),  # 10:00 AM - 12:00 PM
             "mid_morning": (0, 9, 0, 0, 0, 11, 0, 0),  # 9:00 AM - 11:00 AM
             "mid morning": (0, 9, 0, 0, 0, 11, 0, 0),  # 9:00 AM - 11:00 AM
             "early_afternoon": (0, 13, 0, 0, 0, 15, 0, 0),  # 1:00 PM - 3:00 PM
@@ -96,17 +96,17 @@ class BaseParser(ABC):
             "mid afternoon": (0, 14, 0, 0, 0, 16, 0, 0),  # 2:00 PM - 4:00 PM
             "early_evening": (0, 18, 0, 0, 0, 20, 0, 0),  # 6:00 PM - 8:00 PM
             "early evening": (0, 18, 0, 0, 0, 20, 0, 0),  # 6:00 PM - 8:00 PM
-            "late_evening": (0, 22, 0, 0, 0, 23, 59, 59),  # 10:00 PM - 11:59:59 PM 
-            "late evening": (0, 22, 0, 0, 0, 23, 59, 59),  # 10:00 PM - 11:59:59 PM 
+            "late_evening": (0, 22, 0, 0, 0, 23, 59, 59),  # 10:00 PM - 11:59:59 PM
+            "late evening": (0, 22, 0, 0, 0, 23, 59, 59),  # 10:00 PM - 11:59:59 PM
             "late_night": (0, 21, 0, 0, 1, 0, 0, 0),  # 9:00 PM - midnight (next day)
             "late night": (0, 21, 0, 0, 1, 0, 0, 0),  # 9:00 PM - midnight (next day)
             "early_night": (0, 18, 0, 0, 0, 21, 0, 0),  # 6:00 PM - 9:00 PM
             "early night": (0, 18, 0, 0, 0, 21, 0, 0),  # 6:00 PM - 9:00 PM
             # Day periods (外销新增)
-            "early_hours": (0, 0, 0, 0, 0, 5, 0, 0),  # 12:00 AM - 5:00 AM 
-            "early hours": (0, 0, 0, 0, 0, 5, 0, 0),  # 12:00 AM - 5:00 AM 
+            "early_hours": (0, 0, 0, 0, 0, 5, 0, 0),  # 12:00 AM - 5:00 AM
+            "early hours": (0, 0, 0, 0, 0, 5, 0, 0),  # 12:00 AM - 5:00 AM
             "earlyhours": (0, 0, 0, 0, 0, 5, 0, 0),  # 12:00 AM - 5:00 AM (无空格版本)
-            "daytime": (0, 5, 0, 0, 0, 18, 0, 0),  # 5:00 AM - 6:00 PM 
+            "daytime": (0, 5, 0, 0, 0, 18, 0, 0),  # 5:00 AM - 6:00 PM
             # Seasonal periods (will be handled specially in _parse_period)
             "spring": None,  # Special handling for seasons
             "summer": None,  # Special handling for seasons

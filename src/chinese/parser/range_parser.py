@@ -135,7 +135,7 @@ class RangeParser(BaseParser):
                 days = value * 30
             elif unit == "year":
                 days = value * 365
-            
+
             # 减去(N-1)天，然后对齐到日初
             start_time = base_time - timedelta(days=days - 1)
             start_of_day, _ = self._get_day_range(start_time)

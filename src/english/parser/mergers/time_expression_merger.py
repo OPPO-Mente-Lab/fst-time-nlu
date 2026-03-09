@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from datetime import datetime, timedelta
-from ..time_utils import parse_datetime_str, format_datetime_str
+from ..time_utils import parse_datetime_str, format_datetime_str, create_day_range
 
 from ....core.logger import get_logger
 
@@ -51,8 +51,6 @@ class TimeExpressionMerger:
                     if date_result and len(date_result) > 0:
                         # Extract date from result
                         date_time_str = date_result[0][0]  # Start time
-                        from datetime import datetime
-
                         target_date = parse_datetime_str(date_time_str).replace(tzinfo=None)
 
                         # Apply period to that date
@@ -633,8 +631,6 @@ class TimeExpressionMerger:
         Example: morning + 2023-12-25 -> 2023-12-25T06:00:00Z to 2023-12-25T12:00:00Z
         """
         try:
-            from datetime import datetime
-
             if period == "morning":
                 start_time = target_date.replace(hour=6, minute=0, second=0)
                 end_time = target_date.replace(hour=12, minute=0, second=0)

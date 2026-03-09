@@ -43,10 +43,10 @@ class ChineseWordTokenizer:
         self.unknown_char_token = "__unknown_char__"
         if self.sym.find(self.unknown_char_token) == -1:
             self.sym.add_symbol(self.unknown_char_token)
-        
+
         # 维护未知字符列表（按出现顺序，用于输出时恢复）
         self.unknown_chars = []
-        
+
         # 维护token到原始文本位置的映射（用于提取原始文本片段）
         # 格式：{token_index: (start_pos, end_pos, original_text)}
         self.token_positions = []
@@ -73,7 +73,22 @@ class ChineseWordTokenizer:
     def _is_cn_number_char(ch: str) -> bool:
         """判断是否为阿拉伯数字或常见中文数字字符"""
         return ch.isdigit() or ch in {
-            "零", "〇", "○", "一", "二", "两", "三", "四", "五", "六", "七", "八", "九", "十", "百", "千",
+            "零",
+            "〇",
+            "○",
+            "一",
+            "二",
+            "两",
+            "三",
+            "四",
+            "五",
+            "六",
+            "七",
+            "八",
+            "九",
+            "十",
+            "百",
+            "千",
         }
 
     @classmethod
@@ -150,10 +165,10 @@ class ChineseWordTokenizer:
         self.unknown_chars = []
         # 清空token位置映射
         self.token_positions = []
-        
+
         original_text = text.strip()
         current_pos = 0  # 当前在原始文本中的位置
-        
+
         for token in self.simple_tokenize(original_text):
             if token == "":
                 continue
@@ -172,7 +187,7 @@ class ChineseWordTokenizer:
                 # 如果找不到，尝试不区分大小写查找（用于英文单词）
                 token_lower = token.lower()
                 token_start = original_text.lower().find(token_lower, current_pos)
-            
+
             normalized = token
             if self._looks_like_number(token):
                 digits_only = token.replace(".", "")
@@ -248,6 +263,7 @@ class ChineseWordTokenizer:
                 # 未在SymbolTable中，这不应该发生（应该在tokenize()阶段处理）
                 # 但为了健壮性，我们记录警告并跳过这个token
                 import logging
+
                 logger = logging.getLogger("fst_time")
                 logger.warning(
                     f"Token '{token}' not in SymbolTable, skipping. Should be handled in tokenize()"
@@ -274,19 +290,15 @@ class ChineseWordTokenizer:
             self.stats[key] = 0
         self.unknown_chars = []  # 重置未知字符列表
         self.token_positions = []  # 重置token位置映射
-    
+
     def get_unknown_chars(self) -> List[str]:
         """获取未知字符列表（按出现顺序）"""
         return list(self.unknown_chars)
-    
+
     def get_token_positions(self) -> List[tuple]:
         """获取token位置映射列表（按token顺序）
-        
+
         Returns:
             List[tuple]: [(start_pos, end_pos, original_text), ...]
         """
-        return list(self.token_positions)
-    
-    def get_token_positions(self) -> List[tuple]:
-        """获取token位置映射列表（按token顺序）"""
         return list(self.token_positions)

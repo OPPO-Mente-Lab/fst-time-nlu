@@ -26,7 +26,7 @@ class FstTimeExtractor:
     def __init__(self, cache_dir=None, overwrite_cache=False, include_source=True):
         """
         初始化时间提取器
-        
+
         Args:
             cache_dir: FST缓存目录
             overwrite_cache: 是否覆盖现有缓存
@@ -36,8 +36,9 @@ class FstTimeExtractor:
         # 初始化归一化器
         if not cache_dir:
             cache_dir = os.path.dirname(__file__) + "/test/fst"
-        self.normalizer = Normalizer(cache_dir=cache_dir, overwrite_cache=overwrite_cache,
-                                     include_source=include_source)
+        self.normalizer = Normalizer(
+            cache_dir=cache_dir, overwrite_cache=overwrite_cache, include_source=include_source
+        )
         # 初始化时间解析器
         self.time_parser = TimeParser()
         self.normalizer_time = 0

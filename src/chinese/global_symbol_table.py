@@ -423,8 +423,8 @@ class GlobalSymbolTable:
             "period_word",
             'char{value:"',
             '"}',  # 用于skip_rule的固定token
-            '__long_number__',  # 长数字占位符
-            '__unknown_char__',  # 未知字符占位符
+            "__long_number__",  # 长数字占位符
+            "__unknown_char__",  # 未知字符占位符
         ]
         for token in supplemental_tokens:
             self._add_token(token)

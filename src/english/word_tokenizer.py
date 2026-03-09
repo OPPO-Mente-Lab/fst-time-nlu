@@ -66,56 +66,56 @@ class EnglishWordTokenizer:
         self.long_number_token = "__long_number__"
         if self.sym.find(self.long_number_token) == -1:
             self.sym.add_symbol(self.long_number_token)
-        
+
         # 特殊token：用于标记不在SymbolTable中的字符
         self.unknown_char_token = "__unknown_char__"
         if self.sym.find(self.unknown_char_token) == -1:
             self.sym.add_symbol(self.unknown_char_token)
-        
+
         # 维护未知字符列表（按出现顺序，用于输出时恢复）
         self.unknown_chars = []
 
     def _smart_split_unknown_string(self, text: str) -> List[str]:
         """
         智能拆分不在SymbolTable中的字符串
-        
+
         策略：
         1. 尝试找出字符串中哪些部分在SymbolTable中（优先匹配长串）
         2. 对于不在SymbolTable中的字符，作为token保留（但不会添加到SymbolTable）
            - 这些token在FST构建时会被跳过
            - 它们会被TokenRule处理（如果TokenRule支持），输出为 token { value: "xxx" }
-        
+
         例如："next甲乙丙丁morning" -> ['next', '甲', '乙', '丙', '丁', 'morning']
-        
+
         Args:
             text: 输入字符串（不在SymbolTable中）
-            
+
         Returns:
             List[str]: 拆分后的token列表（包含不在SymbolTable中的字符）
         """
         tokens = []
         i = 0
         n = len(text)
-        
+
         while i < n:
             # 尝试从当前位置开始，找到最长的在SymbolTable中的子串
             found = False
             # 从最长到最短尝试匹配
             for length in range(min(n - i, 20), 0, -1):  # 最多尝试20个字符
-                substring = text[i:i + length]
+                substring = text[i : i + length]
                 if self.sym.find(substring) != -1:
                     tokens.append(substring)
                     i += length
                     found = True
                     break
-            
+
             if not found:
                 # 当前字符不在SymbolTable中，作为token保留（但不添加到SymbolTable）
                 # 在FST构建时会被跳过，但会被TokenRule处理
                 char = text[i]
                 tokens.append(char)
                 i += 1
-        
+
         return tokens
 
     def tokenize(self, text: str) -> List[str]:  # noqa: C901
@@ -224,8 +224,8 @@ class EnglishWordTokenizer:
                                 # 记录但不回退到字符级（所有格后缀应该是标准形式）
                     elif "-" in match or "." in match:
                         # 检查是否为"字母+符号+字母"模式
-                        letter_symbol_letter_pattern = r'^[a-z]+[-.][a-z]+$'
-                        
+                        letter_symbol_letter_pattern = r"^[a-z]+[-.][a-z]+$"
+
                         if re.match(letter_symbol_letter_pattern, match):
                             # 字母+符号+字母模式：保持整体不拆分
                             # 尝试作为整体在 SymbolTable 中查找
@@ -279,7 +279,9 @@ class EnglishWordTokenizer:
                                         self.unknown_chars.append(token)
                                         tokens.append(self.unknown_char_token)
                                         self.stats["unknown_words"] += 1
-                                self.stats["char_level_fallback"] += len([t for t in split_tokens if self.sym.find(t) == -1])
+                                self.stats["char_level_fallback"] += len(
+                                    [t for t in split_tokens if self.sym.find(t) == -1]
+                                )
                         else:
                             # 单字符或非字母：使用智能拆分
                             split_tokens = self._smart_split_unknown_string(match)
@@ -292,7 +294,9 @@ class EnglishWordTokenizer:
                                     self.unknown_chars.append(token)
                                     tokens.append(self.unknown_char_token)
                                     self.stats["unknown_words"] += 1
-                            self.stats["char_level_fallback"] += len([t for t in split_tokens if self.sym.find(t) == -1])
+                            self.stats["char_level_fallback"] += len(
+                                [t for t in split_tokens if self.sym.find(t) == -1]
+                            )
             elif match[0].isdigit():
                 # 检查是否包含序数后缀（st, nd, rd, th）
                 # 例如："20th" -> ["20", "th"], "2nd" -> ["2", "nd"]
@@ -421,7 +425,7 @@ class EnglishWordTokenizer:
         """重置统计信息"""
         self.stats = {"total_words": 0, "unknown_words": 0, "char_level_fallback": 0}
         self.unknown_chars = []  # 重置未知字符列表
-    
+
     def get_unknown_chars(self) -> List[str]:
         """获取未知字符列表（按出现顺序）"""
         return list(self.unknown_chars)

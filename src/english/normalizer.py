@@ -276,17 +276,25 @@ class Normalizer(Processor):
             if not tagged_text:
                 return []
 
-            tags = self.parse_tags(tagged_text, input_text=text, input_string=input_string,
-                                  token_positions=None, is_word_level=bool(self.word_tokenizer),
-                                  include_source=self.include_source)
-            
+            tags = self.parse_tags(
+                tagged_text,
+                input_text=text,
+                input_string=input_string,
+                token_positions=None,
+                is_word_level=bool(self.word_tokenizer),
+                include_source=self.include_source,
+            )
+
             # 处理unknown_char：将__unknown_char__替换为实际字符
             # TokenRule输出格式为token{value:"__unknown_char__"}，需要处理
             if unknown_chars and self.word_tokenizer:
                 unknown_char_index = 0
                 for tag in tags:
                     # 检查token类型和char类型的unknown_char
-                    if tag.get("type") in ("token", "char") and tag.get("value") == "__unknown_char__":
+                    if (
+                        tag.get("type") in ("token", "char")
+                        and tag.get("value") == "__unknown_char__"
+                    ):
                         if unknown_char_index < len(unknown_chars):
                             tag["value"] = unknown_chars[unknown_char_index]
                             # 如果是token类型，改为char类型（更符合语义）
@@ -296,11 +304,12 @@ class Normalizer(Processor):
                         else:
                             # 如果未知字符列表已用完，保留占位符（这种情况不应该发生）
                             import logging
+
                             logger = logging.getLogger(f"fst_time-{self.name}")
                             logger.warning(
                                 f"未知字符列表已用完，但仍有__unknown_char__需要替换, 文本: {text[:50]}"
                             )
-            
+
             return tags
         except Exception as e:
             import logging

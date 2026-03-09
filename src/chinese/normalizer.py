@@ -173,10 +173,15 @@ class Normalizer(Processor):
             if not tagged_text:
                 return []
 
-            tags = self.parse_tags(tagged_text, input_text=text, input_string=input_string, 
-                                  token_positions=token_positions, is_word_level=is_word_level,
-                                  include_source=self.include_source)
-            
+            tags = self.parse_tags(
+                tagged_text,
+                input_text=text,
+                input_string=input_string,
+                token_positions=token_positions,
+                is_word_level=is_word_level,
+                include_source=self.include_source,
+            )
+
             # 处理unknown_char：将__unknown_char__替换为实际字符
             if unknown_chars and self.word_tokenizer:
                 unknown_char_index = 0
@@ -191,7 +196,7 @@ class Normalizer(Processor):
                             logger.warning(
                                 f"未知字符列表已用完，但仍有__unknown_char__需要替换, 文本: {text[:50]}"
                             )
-            
+
             return tags
         except Exception as e:
             logger = logging.getLogger(f"fst_time-{self.name}")
@@ -260,7 +265,7 @@ class Normalizer(Processor):
                 token_fst.set_final(s1)
                 arc = pynini.Arc(idx, idx, pynini.Weight.one(token_fst.weight_type()), s1)
                 token_fst.add_arc(s0, arc)
-                
+
                 # 拼接：'char{value:"' + token + '"}'
                 arc = word_pynutil.insert('char{value:"') + token_fst + word_pynutil.insert('"}')
                 skip_arcs.append(arc)

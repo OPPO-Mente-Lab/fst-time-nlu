@@ -668,7 +668,7 @@ class PeriodMerger(BaseMerger):
         """
         处理年份+前N个月/周/天：time_relative(offset_year) + time_period(offset_direction=-1, unit=month/week/day)
         例如："今年前两个月" → 今年1-2月
-        
+
         泛化：适用于"今年/去年/明年 + 前N个月/周/天"的场景
         """
         n = len(tokens)
@@ -712,7 +712,9 @@ class PeriodMerger(BaseMerger):
                         last_day = 29 if calendar.isleap(target_year) else 28
                     else:
                         last_day = calendar.monthrange(target_year, end_month)[1]
-                    end_time = adjusted_base.replace(month=end_month, day=last_day, hour=23, minute=59, second=59)
+                    end_time = adjusted_base.replace(
+                        month=end_month, day=last_day, hour=23, minute=59, second=59
+                    )
                 elif unit == "week":
                     start_time = adjusted_base
                     end_time = adjusted_base + timedelta(weeks=offset_num) - timedelta(days=1)

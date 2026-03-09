@@ -20,7 +20,7 @@ from .base_rule import BaseRule
 class Priority2Rules(BaseRule):
     """Rules for Priority 2: holiday, period, weekday, modifier patterns"""
 
-    def try_merge(
+    def try_merge(  # noqa: C901
         self, i: int, tokens: List[Dict[str, Any]], base_time: datetime
     ) -> Optional[Tuple[List, int]]:
         """
@@ -100,7 +100,7 @@ class Priority2Rules(BaseRule):
             # Check for "of" token
             of_token = tokens[i + 1]
             next_token = tokens[i + 2]
-            
+
             # Case 1: period + of + modifier + holiday (e.g., "morning of this christmas")
             if (
                 of_token.get("type") == "token"
@@ -127,7 +127,7 @@ class Priority2Rules(BaseRule):
                             period_result = period_parser.parse(cur, holiday_date)
                             if period_result:
                                 return period_result, 4  # Skip all four tokens
-            
+
             # Case 2: period + of + holiday (e.g., "morning of christmas")
             holiday_token = next_token
             if (

@@ -26,7 +26,7 @@ class FstTimeExtractor:
     def __init__(self, cache_dir=None, overwrite_cache=False, include_source=True):
         """
         Initialize time extractor
-        
+
         Args:
             cache_dir: FST cache directory
             overwrite_cache: Whether to overwrite existing cache
@@ -36,8 +36,9 @@ class FstTimeExtractor:
         # Initialize normalizer
         if not cache_dir:
             cache_dir = os.path.dirname(__file__) + "/test/fst"
-        self.normalizer = Normalizer(cache_dir=cache_dir, overwrite_cache=overwrite_cache,
-                                     include_source=include_source)
+        self.normalizer = Normalizer(
+            cache_dir=cache_dir, overwrite_cache=overwrite_cache, include_source=include_source
+        )
         # Initialize time parser
         self.time_parser = TimeParser()
         self.normalizer_time = 0

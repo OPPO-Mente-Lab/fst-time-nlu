@@ -506,8 +506,6 @@ class DeltaMerger:
                 start_time = parse_datetime_from_str(start_str)
                 # 确保时区信息一致
                 if start_time.tzinfo is None:
-                    from datetime import timezone
-
                     start_time = start_time.replace(tzinfo=timezone.utc)
             except Exception:
                 return None

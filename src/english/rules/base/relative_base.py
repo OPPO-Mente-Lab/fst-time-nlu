@@ -157,10 +157,14 @@ class RelativeBaseRule:
 
         # 5. Day + time (yesterday at 3pm, tomorrow 9:00)
         # 5a. Special case: tonight + time (mark with is_tonight)
-        tonight_with_time = tonight_marker + delete_space + self.time | (self.time + delete_space + tonight_marker)
+        tonight_with_time = tonight_marker + delete_space + self.time | (
+            self.time + delete_space + tonight_marker
+        )
 
         # 5b. Regular day + time
-        day_with_time = specific_day_dates + delete_space + self.time | (self.time + delete_space + specific_day_dates)
+        day_with_time = specific_day_dates + delete_space + self.time | (
+            self.time + delete_space + specific_day_dates
+        )
 
         # 5c. Day + period + time (tomorrow morning 8am, today afternoon 3pm)
         day_with_period_time = (

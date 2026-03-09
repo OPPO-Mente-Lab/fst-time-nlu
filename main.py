@@ -136,9 +136,6 @@ def main():  # noqa: C901
     Parses command-line arguments and processes either single text input
     or batch processing from a file using FstTimeExtractor.
     """
-    # 控制--file模式时是否显示所有case信息（包括成功和失败）
-    SHOW_ALL_CASES = False  # 设置为True显示所有case，False则只显示错误case
-
     parser = argparse.ArgumentParser(
         description="FST-based Time Extraction Tool - 基于有限状态转换器的时间表达式提取工具",
         formatter_class=argparse.RawDescriptionHelpFormatter,
