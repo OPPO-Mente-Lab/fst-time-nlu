@@ -513,7 +513,7 @@ Welcome to participate in discussions through the following ways:
 
 This project is licensed under the [Apache License 2.0](LICENSE).
 
-Copyright (c) 2025 Ming Yu (yuming@oppo.com), Liangliang Han (hanliangliang@oppo.com)
+Copyright (c) 2025 Ming Yu (yuming@oppo.com), Liangliang Han (hanliangliang@oppo.com), Ri Zhang (zhangri@oppo.com), Shuo Yuan (yuanshuo@oppo.com) and Cong Wang (wangcong12@oppo.com)
 
 **OPPO AI Center, LLM Algorithm Department**
 
@@ -524,7 +524,7 @@ If this project helps your research or work, feel free to cite:
 ```bibtex
 @misc{fst-time-nlu,
   title={FST Time NLU: Production First Time Expression Recognition},
-  author={Ming Yu and Liangliang Han},
+  author={Ming Yu, Liangliang Han, Ri Zhang, Shuo Yuan, Cong Wang},
   year={2025},
   publisher={GitHub},
   howpublished={\url{https://github.com/y00281951/fst-time-nlu}}
