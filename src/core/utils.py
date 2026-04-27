@@ -1,6 +1,6 @@
 # Copyright (c) 2021, NVIDIA CORPORATION.  All rights reserved.
 # Copyright (c) 2024, WENET COMMUNITY.  Xingchen Song (sxc19@tsinghua.org.cn).
-# Copyright (c) 2025 Ming Yu (yuming@oppo.com), Liangliang Han (hanliangliang@oppo.com)
+# Copyright (c)  2025  OPPO Corporation.   (authors: Ming Yu, Liangliang Han)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

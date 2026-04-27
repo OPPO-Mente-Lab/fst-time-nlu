@@ -515,13 +515,13 @@ python main.py --language english --file src/english/test/groundtruth_utc_700eng
 
 本项目采用 [Apache License 2.0](LICENSE) 许可证。
 
-Copyright (c) 2025 Ming Yu (yuming@oppo.com), Liangliang Han (hanliangliang@oppo.com), Ri Zhang (zhangri@oppo.com), Shuo Yuan (yuanshuo@oppo.com) and Cong Wang (wangcong12@oppo.com)
+Copyright (c) 2025 OPPO
 
-**OPPO AI中心 大模型算法部**
+**OPPO AI Center, LLM Algorithm Department**
 
-## 引用
+## Citation
 
-如果本项目对您的研究或工作有帮助，欢迎引用：
+If this project helps your research or work, feel free to cite:
 
 ```bibtex
 @misc{fst-time-nlu,
@@ -529,6 +529,6 @@ Copyright (c) 2025 Ming Yu (yuming@oppo.com), Liangliang Han (hanliangliang@oppo
   author={Ming Yu, Liangliang Han, Ri Zhang, Shuo Yuan, Cong Wang},
   year={2025},
   publisher={GitHub},
-  howpublished={\url{https://github.com/y00281951/fst-time-nlu}}
+  howpublished={\url{https://https://github.com/OPPO-Mente-Lab/fst-time-nlu}}
 }
 ```

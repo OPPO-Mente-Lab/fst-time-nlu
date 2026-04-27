@@ -1,4 +1,4 @@
-# Copyright (c) 2025 Ming Yu (yuming@oppo.com), Liangliang Han (hanliangliang@oppo.com)
+# Copyright (c)  2025  OPPO Corporation.   (authors: Ming Yu, Liangliang Han)
 
 from ..word_level_pynini import string_file, pynutil
 
